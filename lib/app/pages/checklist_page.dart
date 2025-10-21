@@ -12,6 +12,8 @@ import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
 import '../logic/update_checklist_item/update_checklist_cubit.dart';
 import '../services/couchbase_service.dart';
 import '../widget/checklist_items_widget.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
@@ -106,7 +108,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xff020307), Color(0xff232F76)],
+            colors: [AppColors.gradientStart, AppColors.gradientEnd],
           ),
         ),
         child: ListView(
@@ -117,7 +119,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 56),
+              padding: AppSpacing.cardPadding,
               child: Column(
                 children: [
                   InputWidget(controller: textController, onAddItem: addItem),

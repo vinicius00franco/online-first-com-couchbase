@@ -1,5 +1,7 @@
 import 'package:checklist/app/entities/shopping_item_entity.dart';
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 import 'package:intl/intl.dart';
 
 class ChecklistItemWidget extends StatefulWidget {
@@ -25,7 +27,7 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Checkbox(
-        activeColor: Colors.black,
+        activeColor: AppColors.black,
         value: widget.item.isCompleted,
         onChanged: widget.onChanged,
       ),
@@ -39,7 +41,7 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
       ),
       subtitle: Text(
         DateFormat('EEEE (dd/MM/yyyy) - HH:mm').format(widget.item.createdAt),
-        style: const TextStyle(fontSize: 12),
+        style: AppTextStyles.subtitle,
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,14 +49,14 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
           IconButton(
             icon: const Icon(
               Icons.delete,
-              color: Colors.black,
+              color: AppColors.black,
             ),
             onPressed: widget.onDelete,
           ),
           IconButton(
             icon: const Icon(
               Icons.edit,
-              color: Colors.black,
+              color: AppColors.black,
             ),
             onPressed: widget.onEdit,
           ),

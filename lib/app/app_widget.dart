@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
 import 'logic/add_checklist_item/add_checklist_cubit.dart';
@@ -16,8 +16,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return MultiProvider(
       providers: [
         Provider(create: (context) => CouchbaseService()),
@@ -53,15 +51,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Checklist',
         locale: const Locale('pt', 'BR'),
-        theme: ThemeData(
-          fontFamily: 'numans',
-          textTheme: GoogleFonts.numansTextTheme(textTheme),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xffF55B64),
-            primary: const Color(0xffF55B64),
-          ),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.light(),
         home: const ChecklistPage(),
       ),
     );

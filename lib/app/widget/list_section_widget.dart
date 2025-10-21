@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_text_styles.dart';
 
 import '../entities/shopping_item_entity.dart';
 import 'check_item_widget.dart';
@@ -33,11 +34,7 @@ class ListSectionWidget extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  style: AppTextStyles.sectionTitle(context),
                 ),
                 const SizedBox(height: 8),
                 const SeparatorWidget(),
@@ -55,11 +52,7 @@ class ListSectionWidget extends StatelessWidget {
         const SizedBox(height: 20),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
-          ),
+          style: AppTextStyles.sectionTitle(context),
         ),
         const SizedBox(height: 8),
         const SeparatorWidget(),

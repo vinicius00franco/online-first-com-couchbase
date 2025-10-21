@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class InputWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -22,7 +24,7 @@ class InputWidget extends StatelessWidget {
           controller: controller,
           decoration: const InputDecoration(
             hintText: 'Digite o item que deseja adicionar',
-            hintStyle: TextStyle(color: Color(0xFF8A8A8A)),
+            hintStyle: TextStyle(color: AppColors.hint),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(24.0)),
             ),
@@ -44,7 +46,7 @@ class InputWidget extends StatelessWidget {
           ),
           child: const Text(
             'Salvar item',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: AppTextStyles.button,
           ),
         ),
       ],
