@@ -1,0 +1,17 @@
+{
+  "interface": ":4984",
+  "adminInterface": ":4985",
+  "log": ["*"],
+  "databases": {
+    "checklist_db": {
+      "server": "http://couchbase:8091",
+      "username": "Administrator",
+      "password": "password",
+      "bucket": "checklist_db",
+      "users": {
+        "your_username": { "password": "your_password" }
+      },
+      "sync": "function (doc, oldDoc) { channel(['checklist_items']); }"
+    }
+  }
+}

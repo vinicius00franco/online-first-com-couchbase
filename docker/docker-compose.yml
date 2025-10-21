@@ -1,0 +1,31 @@
+
+
+services:
+  couchbase:
+    image: couchbase:community
+    container_name: couchbase-server
+    ports:
+      - "8091-8096:8091-8096"   # Web console, Query, Search, Analytics
+      - "11210:11210"           # Data (KV)
+    volumes:
+      - cb_data:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  sync-gateway:
+    image: couchbase/sync-gateway:latest
+    container_name: sync-gateway
+    depends_on:
+      - couchbase
+    ports:
+      - "4984:4984"   # Public API (ws:// / wss://)
+      - "4985:4985"   # Admin API (local only in dev)
+    volumes:
+      - ./sync-gateway-config.json:/etc/sync_gateway/config.json:ro
+    command: ["/etc/sync_gateway/config.json"]
+
+volumes:
+  cb_data:
