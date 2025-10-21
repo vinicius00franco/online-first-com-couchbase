@@ -5,6 +5,7 @@
 - **Couchbase**: Executando via Docker
 - **Dispositivo**: Físico conectado via USB para depuração
 - **Script de sincronização**: Use `scripts/dev-sync.sh`
+- **Script de debug**: Use `scripts/debug-docker.sh` (execute no diretório docker)
 - **Comandos Docker**: Execute no diretório `cd /home/vinicius/Downloads/estudo/mobile/online-first-com-couchbase-flutter/docker`
 
 ## Notas Técnicas

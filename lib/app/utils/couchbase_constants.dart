@@ -6,13 +6,8 @@ class CouchbaseContants {
   static String password = dotenv.get('USER_PASSWORD');
   static String publicConnectionUrl = dotenv.get('PUBLIC_CONNECTION_URL');
 
-  // Parametrização de collection e channel via .env (com fallback para checklist_items)
-  // Exemplo no .env:
-  //   COLLECTION_NAME=testes
-  //   CHANNEL=testes
+  // Parametrização de scope, collection e channel via .env (com fallback)
+  static String scope = dotenv.env['SCOPE_NAME'] ?? '_default';
   static String collection = dotenv.env['COLLECTION_NAME'] ?? 'checklist_items';
   static String channel = dotenv.env['CHANNEL'] ?? 'checklist_items';
-
-  // Scope padrão
-  static const String scope = '_default';
 }

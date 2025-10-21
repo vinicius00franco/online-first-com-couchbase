@@ -1,0 +1,143 @@
+@startuml ChecklistPage Class Diagram
+
+package "UI Layer" as UI {
+  class ChecklistPage {
+    +ChecklistPage()
+  }
+
+  class _ChecklistPageState {
+    -TextEditingController textController
+    +toggleItemCompletion(item: ShoppingItemEntity): Future<void>
+    +deleteItem(item: ShoppingItemEntity): void
+    +editItem(item: ShoppingItemEntity): void
+    +addItem(): Future<void>
+    +initApp(): Future<void>
+    +initState(): void
+    +dispose(): void
+    +build(context: BuildContext): Widget
+  }
+
+  ChecklistPage --> _ChecklistPageState : creates
+
+  class InputWidget {
+    -TextEditingController controller
+    -VoidCallback onAddItem
+    +InputWidget(controller, onAddItem)
+    +build(context): Widget
+  }
+
+  class ListSectionWidget {
+    -String title
+    -List<ShoppingItemEntity> items
+    -Function(int) onToggleCompletion
+    -Function(int) onDeleteItem
+    -Function(int) onEditItem
+    -bool isFullyEmpty
+    +ListSectionWidget(title, items, onToggleCompletion, onDeleteItem, onEditItem, isFullyEmpty)
+    +build(context): Widget
+  }
+
+  _ChecklistPageState --> InputWidget : uses
+  _ChecklistPageState --> ListSectionWidget : uses
+}
+
+package "Logic Layer" as Logic {
+  class FetchChecklistCubit {
+    -ChecklistRepository _repository
+    +FetchChecklistCubit(repository)
+    +fetchItems(): Future<void>
+  }
+
+  class AddChecklistCubit {
+    -ChecklistRepository _repository
+    +AddChecklistCubit(repository)
+    +addItem(item: ShoppingItemEntity): Future<void>
+  }
+
+  class UpdateChecklistCubit {
+    -ChecklistRepository _repository
+    +UpdateChecklistCubit(repository)
+    +updateItem(id, title, isCompleted): Future<void>
+  }
+
+  class DeleteChecklistCubit {
+    -ChecklistRepository _repository
+    +DeleteChecklistCubit(repository)
+    +deleteItem(id): Future<void>
+  }
+
+  _ChecklistPageState --> FetchChecklistCubit : uses
+  _ChecklistPageState --> AddChecklistCubit : uses
+  _ChecklistPageState --> UpdateChecklistCubit : uses
+  _ChecklistPageState --> DeleteChecklistCubit : uses
+
+  abstract class FetchChecklistState
+
+  class FetchChecklistLoading {
+  }
+
+  class FetchChecklistLoaded {
+    -List<ShoppingItemEntity> items
+    +FetchChecklistLoaded(items)
+  }
+
+  class FetchChecklistError {
+    -String message
+    +FetchChecklistError(message)
+  }
+
+  FetchChecklistState <|-- FetchChecklistLoading
+  FetchChecklistState <|-- FetchChecklistLoaded
+  FetchChecklistState <|-- FetchChecklistError
+
+  FetchChecklistCubit --> FetchChecklistState : emits
+}
+
+package "Data Layer" as Data {
+  class ChecklistRepository {
+    -CouchbaseService couchbaseService
+    -String collectionName
+    +ChecklistRepository(couchbaseService)
+    +fetchAll(): Future<List<ShoppingItemEntity>>
+    +addItem(item: ShoppingItemEntity): Future<void>
+    +updateItem(id, title, isCompleted): Future<void>
+    +deleteItem(id): Future<void>
+  }
+
+  FetchChecklistCubit --> ChecklistRepository : uses
+  AddChecklistCubit --> ChecklistRepository : uses
+  UpdateChecklistCubit --> ChecklistRepository : uses
+  DeleteChecklistCubit --> ChecklistRepository : uses
+
+  class CouchbaseService {
+    -AsyncDatabase? database
+    -AsyncReplicator? replicator
+    -StreamSubscription<List<ConnectivityResult>>? networkConnection
+    +init(): Future<void>
+    +startReplication(onSynced): Future<void>
+    +networkStatusListen(): void
+    +add(data, collectionName): Future<bool>
+    +fetch(collectionName, filter): Future<List<Map<String, dynamic>>>
+    +edit(collectionName, id, data): Future<bool>
+    +delete(collectionName, id): Future<bool>
+  }
+
+  ChecklistRepository --> CouchbaseService : uses
+}
+
+package "Entities" as Entities {
+  class ShoppingItemEntity {
+    -String? id
+    -String title
+    -DateTime createdAt
+    -bool isCompleted
+    +ShoppingItemEntity(title, id, createdAt, isCompleted)
+    +copyWith(id, title, createdAt, isCompleted): ShoppingItemEntity
+    +toMap(): Map<String, dynamic>
+    +fromMap(data): ShoppingItemEntity
+  }
+}
+
+_ChecklistPageState --> ShoppingItemEntity : uses
+
+@enduml

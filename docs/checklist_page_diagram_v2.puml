@@ -1,0 +1,200 @@
+@startuml ChecklistPage Class Diagram v2
+' Legend (simple format for compatibility)
+legend top left
+  Symbol - Meaning
+  «interface» - Interface
+  «abstract» - Abstract class / State base
+endlegend
+
+package "UI Layer" as UI {
+  class ChecklistPage {
+    +ChecklistPage()
+  }
+
+  class _ChecklistPageState {
+    -TextEditingController textController
+    +toggleItemCompletion(item: ShoppingItemEntity): Future<void>
+    +deleteItem(item: ShoppingItemEntity): void
+    +editItem(item: ShoppingItemEntity): void
+    +addItem(): Future<void>
+    +initApp(): Future<void>
+    +initState(): void
+    +dispose(): void
+    +build(context: BuildContext): Widget
+  }
+
+  ChecklistPage --> _ChecklistPageState : creates
+
+  class InputWidget {
+    -TextEditingController controller
+    -VoidCallback onAddItem
+    +InputWidget(controller, onAddItem)
+    +build(context): Widget
+  }
+
+  class ListSectionWidget {
+    -String title
+    -List<ShoppingItemEntity> items
+    -Function(int) onToggleCompletion
+    -Function(int) onDeleteItem
+    -Function(int) onEditItem
+    -bool isFullyEmpty
+    +ListSectionWidget(title, items, onToggleCompletion, onDeleteItem, onEditItem, isFullyEmpty)
+    +build(context): Widget
+  }
+
+  _ChecklistPageState --> InputWidget : uses
+  _ChecklistPageState --> ListSectionWidget : uses
+}
+
+package "Logic Layer" as Logic {
+  ' Option: unified cubit suggested
+  interface ChecklistCubitAPI {
+    +fetchItems(): Future
+    +addItem(item: ShoppingItemEntity): Future
+    +updateItem(id: String, title: String, isCompleted: bool): Future
+    +deleteItem(id: String): Future
+  }
+
+  class FetchChecklistCubit {
+    -IChecklistRepository _repository
+    +FetchChecklistCubit(repository)
+    +fetchItems(): Future
+  }
+
+  class AddChecklistCubit {
+    -IChecklistRepository _repository
+    +AddChecklistCubit(repository)
+    +addItem(item: ShoppingItemEntity): Future
+  }
+
+  class UpdateChecklistCubit {
+    -IChecklistRepository _repository
+    +UpdateChecklistCubit(repository)
+    +updateItem(id, title, isCompleted): Future
+  }
+
+  class DeleteChecklistCubit {
+    -IChecklistRepository _repository
+    +DeleteChecklistCubit(repository)
+    +deleteItem(id): Future
+  }
+
+  _ChecklistPageState --> FetchChecklistCubit : uses
+  _ChecklistPageState --> AddChecklistCubit : uses
+  _ChecklistPageState --> UpdateChecklistCubit : uses
+  _ChecklistPageState --> DeleteChecklistCubit : uses
+
+  ' States for actions (Add/Update/Delete) - modeled
+  abstract class FetchChecklistState
+
+  class FetchChecklistLoading
+  class FetchChecklistLoaded {
+    -items : List
+    +FetchChecklistLoaded(items)
+  }
+  class FetchChecklistError {
+    -message : String
+    +FetchChecklistError(message)
+  }
+
+  FetchChecklistState <|-- FetchChecklistLoading
+  FetchChecklistState <|-- FetchChecklistLoaded
+  FetchChecklistState <|-- FetchChecklistError
+
+  ' Action states for Add/Update/Delete
+  abstract class ChecklistActionState
+  class ChecklistActionLoading
+  class ChecklistActionSuccess
+  class ChecklistActionError {
+    -message : String
+    +ChecklistActionError(message)
+  }
+
+  ' Grouping cubits with their states visually
+  package "Fetch" {
+    FetchChecklistCubit --> FetchChecklistState : emits
+  }
+  package "Actions" {
+    AddChecklistCubit --> ChecklistActionState : emits
+    UpdateChecklistCubit --> ChecklistActionState : emits
+    DeleteChecklistCubit --> ChecklistActionState : emits
+  }
+}
+
+package "Data Layer" as Data {
+  ' Interface for repository
+  interface IChecklistRepository {
+    +fetchAll(): Future
+    +addItem(item: ShoppingItemEntity): Future
+    +updateItem(id: String, title: String, isCompleted: bool): Future
+    +deleteItem(id: String): Future
+  }
+
+  class ChecklistRepository {
+    -couchbaseService : CouchbaseService
+    -collectionName : String
+    +ChecklistRepository(couchbaseService)
+    +fetchAll(): Future
+    +addItem(item: ShoppingItemEntity): Future
+    +updateItem(id, title, isCompleted): Future
+    +deleteItem(id): Future
+  }
+
+  IChecklistRepository <|.. ChecklistRepository
+
+  ' Couchbase service public API vs infra
+  package "CouchbaseService (API)" as CBAPI {
+    class CouchbaseService {
+      +init(): Future
+      +startReplication(onSynced: Function): Future
+      +networkStatusListen(): void
+      +add(data: Map, collectionName: String): Future
+      +fetch(collectionName: String, filter: String): List
+      +edit(collectionName: String, id: String, data: Map): Future
+      +delete(collectionName: String, id: String): Future
+    }
+  }
+
+  package "CouchbaseService (infra)" as CBInfra {
+    class _DatabaseInfra {
+      -databaseImpl
+      -replicatorImpl
+      -networkSubscription
+    }
+  }
+
+  ChecklistRepository o-- CouchbaseService : composition
+  CouchbaseService ..> _DatabaseInfra : uses
+
+  FetchChecklistCubit --> ChecklistRepository : uses
+  AddChecklistCubit --> ChecklistRepository : uses
+  UpdateChecklistCubit --> ChecklistRepository : uses
+  DeleteChecklistCubit --> ChecklistRepository : uses
+}
+
+package "Entities" as Entities {
+  class ShoppingItemEntity {
+    -id : String (optional)
+    -title : String
+    -createdAt : DateTime
+    -isCompleted : bool
+    +ShoppingItemEntity(title, id, createdAt, isCompleted)
+    +copyWith(...): ShoppingItemEntity
+    +toMap(): Map
+    +fromMap(data): ShoppingItemEntity
+    +equals()/hashCode()
+  }
+}
+
+' multiplicities
+ListSectionWidget "items : 0..*" -- ShoppingItemEntity : contains
+_ChecklistPageState --> ShoppingItemEntity : uses
+
+' Suggestion: optional unified cubit
+ChecklistCubitAPI <|.. FetchChecklistCubit
+ChecklistCubitAPI <|.. AddChecklistCubit
+ChecklistCubitAPI <|.. UpdateChecklistCubit
+ChecklistCubitAPI <|.. DeleteChecklistCubit
+
+@enduml

@@ -41,10 +41,13 @@ class CouchbaseService {
       );
       replicator = await Replicator.createAsync(replicatorConfig);
       replicator?.addChangeListener((change) {
-        if (change.status.error != null) {
-          print('Ocorreu um erro na replicação: ${change.status.error}');
+        final activity = change.status.activity;
+        final error = change.status.error;
+        if (error != null) {
+          // Surface error object details
+          print('Erro de replicação: $error');
         }
-        if (change.status.activity == ReplicatorActivityLevel.idle) {
+        if (activity == ReplicatorActivityLevel.idle) {
           print('ocorreu uma sincronização');
           onSynced();
         }
@@ -104,6 +107,7 @@ class CouchbaseService {
           },
         )
         .toList();
+    print('Documentos buscados localmente: ${data?.length ?? 0}');
     return data ?? [];
   }
 

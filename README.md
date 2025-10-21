@@ -35,7 +35,15 @@ Serviços expostos:
 
 2) Usuários, bucket e coleções
 
-`docker/sync-gateway-config.json` provisiona o bucket `your-database`, escopo `app_scope`, coleção `checklist_items` e usuário `your_username/your_password`.
+- O bucket `checklist_db` é criado automaticamente no primeiro start.
+- As coleções `_default.checklist_items` e `_default.testes` são usadas pelo app e configuradas no Sync Gateway.
+- Garanta que o usuário do app tem acesso às coleções e canais. Rode:
+
+```
+./scripts/sg-ensure-user.sh your_username your_password
+```
+
+Isso cria/atualiza o usuário no Sync Gateway com acesso às coleções e canais necessários.
 
 3) Variáveis de ambiente
 
@@ -51,5 +59,14 @@ adb reverse tcp:4984 tcp:4984
 Ou ajuste `PUBLIC_CONNECTION_URL` para o IP da sua rede, ex: `ws://192.168.0.10:4984/checklist_db`.
 
 4) Permissões Android
+5) Dicas de debug
+
+```
+./scripts/debug-docker.sh         # Status de containers e configuração do SG
+./scripts/sg-inspect.sh           # Inspeção detalhada de bucket/coleções/usuários
+./scripts/sg-inspect.sh your_username  # Ver estado do usuário
+```
+
+Se o app logar "Erro de replicação", cheque se o usuário possui `collection_access` para `_default.checklist_items` e se o `PUBLIC_CONNECTION_URL` aponta para `ws://localhost:4984/checklist_db` (com `adb reverse` ativo em dispositivo físico).
 
 O `AndroidManifest.xml` inclui `INTERNET`, `ACCESS_NETWORK_STATE` e `android:usesCleartextTraffic="true"` para permitir `ws://` em dev. Em produção, prefira `wss://` e desative cleartext.
