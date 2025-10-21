@@ -86,10 +86,12 @@ class CouchbaseService {
     );
     if (collection != null) {
       final document = MutableDocument(data);
-      return await collection.saveDocument(
+      final result = await collection.saveDocument(
         document,
         ConcurrencyControl.lastWriteWins,
       );
+      print('Documento salvo localmente: ${document.id}');
+      return result;
     }
     return false;
   }
@@ -139,6 +141,7 @@ class CouchbaseService {
           mutableDoc,
           ConcurrencyControl.lastWriteWins,
         );
+        print('Documento editado localmente: $id');
         return result;
       }
     }
@@ -160,6 +163,7 @@ class CouchbaseService {
           doc,
           ConcurrencyControl.lastWriteWins,
         );
+        print('Documento deletado localmente: $id');
         return result;
       }
     }

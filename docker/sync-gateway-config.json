@@ -1,4 +1,6 @@
 {
+  "disable_persistent_config": true,
+  "use_tls_server": false,
   "interface": ":4984",
   "adminInterface": ":4985",
   "log": ["*"],
@@ -8,8 +10,12 @@
       "username": "Administrator",
       "password": "password",
       "bucket": "checklist_db",
+      "num_index_replicas": 0,
       "users": {
-        "your_username": { "password": "your_password" }
+        "your_username": {
+          "password": "your_password",
+          "admin_channels": ["checklist_items"]
+        }
       },
       "sync": "function (doc, oldDoc) { channel(['checklist_items']); }"
     }
