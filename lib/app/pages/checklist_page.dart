@@ -12,7 +12,6 @@ import '../logic/checklist/checklist_state.dart';
 import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
 import '../logic/update_checklist_item/update_checklist_cubit.dart';
 import '../services/couchbase_service.dart';
-import '../utils/couchbase_constants.dart';
 import '../widget/list_section_widget.dart';
 
 class ChecklistPage extends StatefulWidget {
@@ -28,9 +27,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
   // ON/OFF CHECK ITEM
   Future<void> toggleItemCompletion(ShoppingItemEntity item) async {
     await context.read<UpdateChecklistCubit>().updateItem(
-          item.id!,
-          isCompleted: !item.isCompleted,
-        );
+      item.id!,
+      isCompleted: !item.isCompleted,
+    );
     context.read<FetchChecklistCubit>().fetchItems();
   }
 
@@ -57,9 +56,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
       controller: controller,
       onConfirm: () async {
         await context.read<UpdateChecklistCubit>().updateItem(
-              item.id!,
-              title: controller.text,
-            );
+          item.id!,
+          title: controller.text,
+        );
         context.read<FetchChecklistCubit>().fetchItems();
       },
     );
@@ -68,12 +67,12 @@ class _ChecklistPageState extends State<ChecklistPage> {
   // ADD ITEM
   Future<void> addItem() async {
     await context.read<AddChecklistCubit>().addItem(
-          ShoppingItemEntity(
-            title: textController.text,
-            createdAt: DateTime.now(),
-            isCompleted: false,
-          ),
-        );
+      ShoppingItemEntity(
+        title: textController.text,
+        createdAt: DateTime.now(),
+        isCompleted: false,
+      ),
+    );
     textController.clear();
     context.read<FetchChecklistCubit>().fetchItems();
   }
@@ -81,11 +80,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
   Future<void> initApp() async {
     await context.read<FetchChecklistCubit>().fetchItems();
     context.read<CouchbaseService>().startReplication(
-          collectionName: CouchbaseContants.collection,
-          onSynced: () {
-            context.read<FetchChecklistCubit>().fetchItems();
-          },
-        );
+      onSynced: () {
+        context.read<FetchChecklistCubit>().fetchItems();
+      },
+    );
     context.read<CouchbaseService>().networkStatusListen();
   }
 
@@ -124,10 +122,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 56),
               child: Column(
                 children: [
-                  InputWidget(
-                    controller: textController,
-                    onAddItem: addItem,
-                  ),
+                  InputWidget(controller: textController, onAddItem: addItem),
                   const SizedBox(height: 48),
                   BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
                     builder: (context, state) {
@@ -136,11 +131,13 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       } else if (state is FetchChecklistLoaded) {
                         final items = state.items;
 
-                        final notCompletedItems =
-                            items.where((item) => !item.isCompleted).toList();
+                        final notCompletedItems = items
+                            .where((item) => !item.isCompleted)
+                            .toList();
 
-                        final completedItems =
-                            items.where((item) => item.isCompleted).toList();
+                        final completedItems = items
+                            .where((item) => item.isCompleted)
+                            .toList();
 
                         return Column(
                           children: [
@@ -149,8 +146,8 @@ class _ChecklistPageState extends State<ChecklistPage> {
                               items: notCompletedItems,
                               onToggleCompletion: (index) =>
                                   toggleItemCompletion(
-                                notCompletedItems[index],
-                              ),
+                                    notCompletedItems[index],
+                                  ),
                               onDeleteItem: (index) =>
                                   deleteItem(notCompletedItems[index]),
                               onEditItem: (index) =>
@@ -160,9 +157,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                               title: 'Comprado',
                               items: completedItems,
                               onToggleCompletion: (index) =>
-                                  toggleItemCompletion(
-                                completedItems[index],
-                              ),
+                                  toggleItemCompletion(completedItems[index]),
                               onDeleteItem: (index) =>
                                   deleteItem(completedItems[index]),
                               onEditItem: (index) =>
@@ -174,7 +169,8 @@ class _ChecklistPageState extends State<ChecklistPage> {
                         return Center(child: Text(state.message));
                       } else {
                         return const Center(
-                            child: Text('Nenhum item disponível.'));
+                          child: Text('Nenhum item disponível.'),
+                        );
                       }
                     },
                   ),

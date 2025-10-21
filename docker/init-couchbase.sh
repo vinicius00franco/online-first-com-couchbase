@@ -19,8 +19,12 @@ curl -X POST http://localhost:8091/clusterInit \
   -d indexMemoryQuota=256 \
   -d ftsMemoryQuota=256
 
-# Aguardar
-sleep 10
+echo "Configurando Index Storage Mode..."
+curl -u Administrator:password -X POST http://localhost:8091/settings/indexes \
+  -d storageMode=forestdb
+
+# Pequena espera
+sleep 5
 
 # Criar bucket
 curl -X POST http://Administrator:password@localhost:8091/pools/default/buckets \

@@ -11,9 +11,7 @@ class ChecklistRepository {
   final collectionName = CouchbaseContants.collection;
 
   Future<List<ShoppingItemEntity>> fetchAll() async {
-    final result = await couchbaseService.fetch(
-      collectionName: collectionName,
-    );
+    final result = await couchbaseService.fetch(collectionName: collectionName);
     final data = result.map(ShoppingItemEntity.fromMap).toList();
     return data;
   }
@@ -42,9 +40,6 @@ class ChecklistRepository {
   }
 
   Future<void> deleteItem(String id) async {
-    await couchbaseService.delete(
-      collectionName: collectionName,
-      id: id,
-    );
+    await couchbaseService.delete(collectionName: collectionName, id: id);
   }
 }
