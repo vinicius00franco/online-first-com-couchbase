@@ -48,7 +48,7 @@ package "UI Layer" as UI {
 }
 
 package "Logic Layer" as Logic {
-  ' Option: unified cubit suggested
+  ' Unified cubit option
   interface ChecklistCubitAPI {
     +fetchItems(): Future
     +addItem(item: ShoppingItemEntity): Future
@@ -56,69 +56,53 @@ package "Logic Layer" as Logic {
     +deleteItem(id: String): Future
   }
 
-  class FetchChecklistCubit {
+  class ChecklistCubit {
     -IChecklistRepository _repository
-    +FetchChecklistCubit(repository)
+    +ChecklistCubit(repository)
     +fetchItems(): Future
-  }
-
-  class AddChecklistCubit {
-    -IChecklistRepository _repository
-    +AddChecklistCubit(repository)
     +addItem(item: ShoppingItemEntity): Future
-  }
-
-  class UpdateChecklistCubit {
-    -IChecklistRepository _repository
-    +UpdateChecklistCubit(repository)
     +updateItem(id, title, isCompleted): Future
-  }
-
-  class DeleteChecklistCubit {
-    -IChecklistRepository _repository
-    +DeleteChecklistCubit(repository)
     +deleteItem(id): Future
   }
 
-  _ChecklistPageState --> FetchChecklistCubit : uses
-  _ChecklistPageState --> AddChecklistCubit : uses
-  _ChecklistPageState --> UpdateChecklistCubit : uses
-  _ChecklistPageState --> DeleteChecklistCubit : uses
+  ' Declare that the UI depends on the abstraction (ChecklistCubitAPI)
+  _ChecklistPageState --> ChecklistCubitAPI : uses
+  ' Grouped states for the cubit
+  package "States" {
+    ' Fetch-related states
+    abstract class FetchChecklistState
 
-  ' States for actions (Add/Update/Delete) - modeled
-  abstract class FetchChecklistState
+    class FetchChecklistLoading
+    class FetchChecklistLoaded {
+      -items : List
+      +FetchChecklistLoaded(items)
+    }
+    class FetchChecklistError {
+      -message : String
+      +FetchChecklistError(message)
+    }
 
-  class FetchChecklistLoading
-  class FetchChecklistLoaded {
-    -items : List
-    +FetchChecklistLoaded(items)
-  }
-  class FetchChecklistError {
-    -message : String
-    +FetchChecklistError(message)
-  }
+    FetchChecklistState <|-- FetchChecklistLoading
+    FetchChecklistState <|-- FetchChecklistLoaded
+    FetchChecklistState <|-- FetchChecklistError
 
-  FetchChecklistState <|-- FetchChecklistLoading
-  FetchChecklistState <|-- FetchChecklistLoaded
-  FetchChecklistState <|-- FetchChecklistError
+    ' Action-related states
+    ' Action-related states (generic, reusable)
+    abstract class ActionState
+    class ActionInitial
+    class ActionLoading
+    class ActionSuccess {
+      -message : String (optional)
+      -item : ShoppingItemEntity (optional)
+      +ActionSuccess(message, item)
+    }
+    class ActionError {
+      -message : String
+      +ActionError(message)
+    }
 
-  ' Action states for Add/Update/Delete
-  abstract class ChecklistActionState
-  class ChecklistActionLoading
-  class ChecklistActionSuccess
-  class ChecklistActionError {
-    -message : String
-    +ChecklistActionError(message)
-  }
-
-  ' Grouping cubits with their states visually
-  package "Fetch" {
-    FetchChecklistCubit --> FetchChecklistState : emits
-  }
-  package "Actions" {
-    AddChecklistCubit --> ChecklistActionState : emits
-    UpdateChecklistCubit --> ChecklistActionState : emits
-    DeleteChecklistCubit --> ChecklistActionState : emits
+    ChecklistCubit --> FetchChecklistState : emits
+    ChecklistCubit --> ActionState : emits
   }
 }
 
@@ -167,10 +151,10 @@ package "Data Layer" as Data {
   ChecklistRepository o-- CouchbaseService : composition
   CouchbaseService ..> _DatabaseInfra : uses
 
-  FetchChecklistCubit --> ChecklistRepository : uses
-  AddChecklistCubit --> ChecklistRepository : uses
-  UpdateChecklistCubit --> ChecklistRepository : uses
-  DeleteChecklistCubit --> ChecklistRepository : uses
+  ChecklistCubit --> ChecklistRepository : uses
+
+  ' Implementation relationship: ChecklistCubit implements the API
+  ChecklistCubitAPI <|.. ChecklistCubit
 }
 
 package "Entities" as Entities {
@@ -192,9 +176,6 @@ ListSectionWidget "items : 0..*" -- ShoppingItemEntity : contains
 _ChecklistPageState --> ShoppingItemEntity : uses
 
 ' Suggestion: optional unified cubit
-ChecklistCubitAPI <|.. FetchChecklistCubit
-ChecklistCubitAPI <|.. AddChecklistCubit
-ChecklistCubitAPI <|.. UpdateChecklistCubit
-ChecklistCubitAPI <|.. DeleteChecklistCubit
+'' The unified ChecklistCubit now implements ChecklistCubitAPI (see above)
 
 @enduml

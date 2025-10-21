@@ -8,11 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../entities/shopping_item_entity.dart';
 import '../helpers/dialogs.dart';
 import '../logic/add_checklist_item/add_checklist_cubit.dart';
-import '../logic/checklist/checklist_state.dart';
 import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
 import '../logic/update_checklist_item/update_checklist_cubit.dart';
 import '../services/couchbase_service.dart';
-import '../widget/list_section_widget.dart';
+import '../widget/checklist_items_widget.dart';
 
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
@@ -23,13 +22,12 @@ class ChecklistPage extends StatefulWidget {
 
 class _ChecklistPageState extends State<ChecklistPage> {
   final textController = TextEditingController();
-
   // ON/OFF CHECK ITEM
   Future<void> toggleItemCompletion(ShoppingItemEntity item) async {
     await context.read<UpdateChecklistCubit>().updateItem(
-      item.id!,
-      isCompleted: !item.isCompleted,
-    );
+          item.id!,
+          isCompleted: !item.isCompleted,
+        );
     context.read<FetchChecklistCubit>().fetchItems();
   }
 
@@ -56,9 +54,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
       controller: controller,
       onConfirm: () async {
         await context.read<UpdateChecklistCubit>().updateItem(
-          item.id!,
-          title: controller.text,
-        );
+              item.id!,
+              title: controller.text,
+            );
         context.read<FetchChecklistCubit>().fetchItems();
       },
     );
@@ -67,12 +65,12 @@ class _ChecklistPageState extends State<ChecklistPage> {
   // ADD ITEM
   Future<void> addItem() async {
     await context.read<AddChecklistCubit>().addItem(
-      ShoppingItemEntity(
-        title: textController.text,
-        createdAt: DateTime.now(),
-        isCompleted: false,
-      ),
-    );
+          ShoppingItemEntity(
+            title: textController.text,
+            createdAt: DateTime.now(),
+            isCompleted: false,
+          ),
+        );
     textController.clear();
     context.read<FetchChecklistCubit>().fetchItems();
   }
@@ -124,55 +122,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
                 children: [
                   InputWidget(controller: textController, onAddItem: addItem),
                   const SizedBox(height: 48),
-                  BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
-                    builder: (context, state) {
-                      if (state is FetchChecklistLoading) {
-                        return const CircularProgressIndicator();
-                      } else if (state is FetchChecklistLoaded) {
-                        final items = state.items;
-
-                        final notCompletedItems = items
-                            .where((item) => !item.isCompleted)
-                            .toList();
-
-                        final completedItems = items
-                            .where((item) => item.isCompleted)
-                            .toList();
-
-                        return Column(
-                          children: [
-                            ListSectionWidget(
-                              title: 'Lista de Compras',
-                              items: notCompletedItems,
-                              onToggleCompletion: (index) =>
-                                  toggleItemCompletion(
-                                    notCompletedItems[index],
-                                  ),
-                              onDeleteItem: (index) =>
-                                  deleteItem(notCompletedItems[index]),
-                              onEditItem: (index) =>
-                                  editItem(notCompletedItems[index]),
-                            ),
-                            ListSectionWidget(
-                              title: 'Comprado',
-                              items: completedItems,
-                              onToggleCompletion: (index) =>
-                                  toggleItemCompletion(completedItems[index]),
-                              onDeleteItem: (index) =>
-                                  deleteItem(completedItems[index]),
-                              onEditItem: (index) =>
-                                  editItem(completedItems[index]),
-                            ),
-                          ],
-                        );
-                      } else if (state is FetchChecklistError) {
-                        return Center(child: Text(state.message));
-                      } else {
-                        return const Center(
-                          child: Text('Nenhum item disponível.'),
-                        );
-                      }
-                    },
+                  ChecklistItemsBuilder(
+                    onToggleCompletion: (item) => toggleItemCompletion(item),
+                    onDeleteItem: (item) => deleteItem(item),
+                    onEditItem: (item) => editItem(item),
                   ),
                 ],
               ),
