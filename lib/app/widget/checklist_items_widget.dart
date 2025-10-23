@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:checklist/app/logic/checklist/checklist_cubit.dart';
+import 'package:checklist/app/pages/checklist_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,12 +10,14 @@ import '../logic/checklist/checklist_state.dart';
 import 'check_item_widget.dart';
 
 class ChecklistItemsBuilder extends StatelessWidget {
+  final ViewMode viewMode; // Adicionar
   final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
   final void Function(ShoppingItemEntity) onDeleteItem;
   final void Function(ShoppingItemEntity) onEditItem;
 
   const ChecklistItemsBuilder({
     super.key,
+    required this.viewMode, // Adicionar
     required this.onToggleCompletion,
     required this.onDeleteItem,
     required this.onEditItem,
@@ -29,21 +32,74 @@ class ChecklistItemsBuilder extends StatelessWidget {
         if (state is FetchChecklistLoading) {
           return const CircularProgressIndicator();
         } else if (state is FetchChecklistLoaded) {
-          final items = state.items;
-          print('ChecklistItemsBuilder: ${items.length} itens carregados');
+          final items = viewMode == ViewMode.shopping
+              ? state.items.where((item) => !item.isCompleted).toList()
+              : state.items.where((item) => item.isCompleted).toList();
 
-          final notCompletedItems =
-              items.where((item) => !item.isCompleted).toList();
+          print(
+              'ChecklistItemsBuilder: ${items.length} itens carregados para modo $viewMode');
 
-          final completedItems =
-              items.where((item) => item.isCompleted).toList();
+          if (items.isEmpty) {
+            return Column(
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  viewMode == ViewMode.shopping
+                      ? 'Nenhum item na lista de compras'
+                      : 'Nenhum item comprado',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 16),
+              ],
+            );
+          }
 
-          return ChecklistSections(
-            notCompletedItems: notCompletedItems,
-            completedItems: completedItems,
-            onToggleCompletion: onToggleCompletion,
-            onDeleteItem: onDeleteItem,
-            onEditItem: onEditItem,
+          return Column(
+            children: [
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Icon(
+                    viewMode == ViewMode.shopping
+                        ? Icons.shopping_cart
+                        : Icons.check_circle,
+                    color: viewMode == ViewMode.shopping
+                        ? Colors.blue
+                        : Colors.green,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    viewMode == ViewMode.shopping
+                        ? 'Lista de Compras (${items.length})'
+                        : 'Comprado (${items.length})',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 1,
+                color: Colors.grey.shade300,
+              ),
+              const SizedBox(height: 16),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return ChecklistItemWidget(
+                    item: items[index],
+                    onChanged: (value) => onToggleCompletion(items[index]),
+                    onDelete: () => onDeleteItem(items[index]),
+                    onEdit: () => onEditItem(items[index]),
+                  );
+                },
+              ),
+            ],
           );
         } else if (state is FetchChecklistError) {
           return Center(child: Text(state.message));

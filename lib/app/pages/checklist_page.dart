@@ -17,6 +17,8 @@ import '../widget/total_widget.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 
+enum ViewMode { shopping, purchased }
+
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
 
@@ -26,7 +28,14 @@ class ChecklistPage extends StatefulWidget {
 
 class _ChecklistPageState extends State<ChecklistPage> {
   final textController = TextEditingController();
-  // ON/OFF CHECK ITEM
+  ViewMode _currentView = ViewMode.shopping; // Estado da visualização
+
+  void _switchView(ViewMode mode) {
+    setState(() {
+      _currentView = mode;
+    });
+  }
+
   Future<void> toggleItemCompletion(ShoppingItemEntity item) async {
     await context.read<UpdateChecklistCubit>().updateItem(
           item.id!,
@@ -129,8 +138,24 @@ class _ChecklistPageState extends State<ChecklistPage> {
         ),
         child: ListView(
           children: [
+            // Seção 1: Input de itens
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: AppSpacing.cardPadding,
+              child:
+                  InputWidget(controller: textController, onAddItem: addItem),
+            ),
+
+            // Espaçamento entre seções
+            const SizedBox(height: 16),
+
+            // Seção 2: Controles, Total e Lista de itens
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -138,7 +163,54 @@ class _ChecklistPageState extends State<ChecklistPage> {
               padding: AppSpacing.cardPadding,
               child: Column(
                 children: [
-                  InputWidget(controller: textController, onAddItem: addItem),
+                  // Botões de alternância
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => _switchView(ViewMode.shopping),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _currentView == ViewMode.shopping
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey.shade300,
+                            foregroundColor: _currentView == ViewMode.shopping
+                                ? Colors.white
+                                : Colors.black,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1, horizontal: 16),
+                            fixedSize: const Size(double.infinity, 60),
+                          ),
+                          child: const Text(
+                            'Lista de Compras',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => _switchView(ViewMode.purchased),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _currentView == ViewMode.purchased
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey.shade300,
+                            foregroundColor: _currentView == ViewMode.purchased
+                                ? Colors.white
+                                : Colors.black,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1, horizontal: 16),
+                            fixedSize: const Size(double.infinity, 60),
+                          ),
+                          child: const Text(
+                            'Comprados',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Total
                   BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
                     builder: (context, state) {
                       if (state is FetchChecklistLoaded) {
@@ -147,8 +219,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 16),
+                  // Lista de itens
                   ChecklistItemsBuilder(
+                    viewMode: _currentView,
                     onToggleCompletion: (item) => toggleItemCompletion(item),
                     onDeleteItem: (item) => deleteItem(item),
                     onEditItem: (item) => editItem(item),
@@ -156,6 +230,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                 ],
               ),
             ),
+
             const Center(
               child: Text(
                 'Desenvolvido por Alura. Projeto fictício sem fins comerciais.',
