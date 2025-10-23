@@ -20,8 +20,6 @@ import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
 import '../utils/logger.dart' as app_logger;
 
-enum ViewMode { shopping, purchased }
-
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
 
@@ -31,7 +29,8 @@ class ChecklistPage extends StatefulWidget {
 
 class _ChecklistPageState extends State<ChecklistPage> {
   final textController = TextEditingController();
-  ViewMode _currentView = ViewMode.shopping; // Estado da visualização
+  // Alternância entre listas (Lista de Compras x Comprados)
+  ViewMode _currentView = ViewMode.shopping;
 
   void _switchView(ViewMode mode) {
     setState(() {
@@ -145,7 +144,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
             // Seção 1: Input de itens
             Container(
               margin: AppSpacing.cardMargin,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: AppTheme.cardBorderRadius,
               ),
@@ -155,19 +154,19 @@ class _ChecklistPageState extends State<ChecklistPage> {
             ),
 
             // Espaçamento entre seções
-            SizedBox(height: AppSpacing.sectionGap),
+            const SizedBox(height: AppSpacing.sectionGap),
 
             // Seção 2: Controles, Total e Lista de itens
             Container(
               margin: AppSpacing.horizontal16,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: AppTheme.cardBorderRadius,
               ),
               padding: AppSpacing.cardPadding,
               child: Column(
                 children: [
-                  // Botões de alternância
+                  // Botões de alternância entre "Lista de Compras" e "Comprados"
                   Row(
                     children: [
                       Expanded(
@@ -182,7 +181,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
                                 : AppColors.buttonInactiveText,
                             padding: AppSpacing.buttonPadding,
                             fixedSize: const Size(
-                                double.infinity, AppTheme.buttonHeight),
+                              double.infinity,
+                              AppTheme.buttonHeight,
+                            ),
                           ),
                           child: const Text(
                             'Lista de Compras',
@@ -203,7 +204,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
                                 : AppColors.buttonInactiveText,
                             padding: AppSpacing.buttonPadding,
                             fixedSize: const Size(
-                                double.infinity, AppTheme.buttonHeight),
+                              double.infinity,
+                              AppTheme.buttonHeight,
+                            ),
                           ),
                           child: const Text(
                             'Comprados',
@@ -213,7 +216,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: AppSpacing.sectionGap),
+                  const SizedBox(height: AppSpacing.sectionGap),
                   // Total
                   BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
                     builder: (context, state) {
@@ -223,8 +226,8 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                  SizedBox(height: AppSpacing.sectionGap),
-                  // Lista de itens
+                  const SizedBox(height: AppSpacing.sectionGap),
+                  // Lista de itens (paginada) conforme a visualização atual
                   ChecklistItemsBuilder(
                     viewMode: _currentView,
                     onToggleCompletion: (item) => toggleItemCompletion(item),
@@ -242,7 +245,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: AppSpacing.bottomPadding),
+            const SizedBox(height: AppSpacing.bottomPadding),
           ],
         ),
       ),

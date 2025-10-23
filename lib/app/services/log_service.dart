@@ -10,7 +10,7 @@ class LogService {
   Timer? _timer;
 
   void init() {
-    _timer = Timer.periodic(Duration(hours: 1), (_) => _compress());
+    _timer = Timer.periodic(const Duration(hours: 1), (_) => _compress());
   }
 
   void log(String message, String level) {
@@ -33,7 +33,7 @@ class LogService {
   String getLogs() => _buffer.toString();
 
   Future<void> _compress() async {
-    final cutoff = DateTime.now().subtract(Duration(days: 1));
+    final cutoff = DateTime.now().subtract(const Duration(days: 1));
     final oldLogs = await _repository.fetchOldLogs(cutoff);
 
     if (oldLogs.isEmpty) return;

@@ -50,7 +50,7 @@ class _InputWidgetState extends State<InputWidget> {
         const SizedBox(height: 16),
         TextField(
           controller: _priceController,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: const InputDecoration(
             hintText: 'Digite o preço (opcional)',
             hintStyle: TextStyle(color: AppColors.hint),

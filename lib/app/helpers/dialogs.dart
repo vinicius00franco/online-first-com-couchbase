@@ -54,7 +54,8 @@ class Dialogs {
               const SizedBox(height: 16),
               TextField(
                 controller: priceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
                     hintText: 'Digite o preço (opcional)'),
               ),
