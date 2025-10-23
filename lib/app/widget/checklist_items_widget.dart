@@ -230,6 +230,31 @@ class ItemsPageWidget extends StatelessWidget {
   }
 }
 
+class EmptyStateWidget extends StatelessWidget {
+  final ViewMode viewMode;
+
+  const EmptyStateWidget({
+    super.key,
+    required this.viewMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: AppSpacing.sectionTopPadding),
+        Text(
+          viewMode == ViewMode.shopping
+              ? 'Nenhum item na lista de compras'
+              : 'Nenhum item comprado',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
 class ChecklistItemsBuilder extends StatefulWidget {
   final ViewMode viewMode; // Alterna entre listas
   final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
@@ -279,18 +304,7 @@ class _ChecklistItemsBuilderState extends State<ChecklistItemsBuilder> {
               'ChecklistItemsBuilder: ${all.length} itens carregados para modo ${widget.viewMode}');
 
           if (all.isEmpty) {
-            return Column(
-              children: [
-                const SizedBox(height: AppSpacing.sectionTopPadding),
-                Text(
-                  widget.viewMode == ViewMode.shopping
-                      ? 'Nenhum item na lista de compras'
-                      : 'Nenhum item comprado',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 16),
-              ],
-            );
+            return EmptyStateWidget(viewMode: widget.viewMode);
           }
 
           // Paginação: divide em páginas de 6 itens
