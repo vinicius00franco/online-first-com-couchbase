@@ -28,10 +28,12 @@ class ChecklistItemsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    app_logger.Logger.instance.info('ChecklistItemsBuilder: Reconstruindo widget');
+    app_logger.Logger.instance
+        .info('ChecklistItemsBuilder: Reconstruindo widget');
     return BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
       builder: (context, state) {
-        app_logger.Logger.instance.info('ChecklistItemsBuilder: Estado recebido: $state');
+        app_logger.Logger.instance
+            .info('ChecklistItemsBuilder: Estado recebido: $state');
         if (state is FetchChecklistLoading) {
           return const CircularProgressIndicator();
         } else if (state is FetchChecklistLoaded) {
