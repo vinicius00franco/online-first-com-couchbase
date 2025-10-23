@@ -3,12 +3,14 @@ class ShoppingItemEntity {
   String title;
   DateTime createdAt;
   bool isCompleted;
+  double price;
 
   ShoppingItemEntity({
     required this.title,
     this.id,
     required this.createdAt,
     this.isCompleted = false,
+    this.price = 0.0,
   });
 
   ShoppingItemEntity copyWith({
@@ -16,12 +18,14 @@ class ShoppingItemEntity {
     String? title,
     DateTime? createdAt,
     bool? isCompleted,
+    double? price,
   }) {
     return ShoppingItemEntity(
       id: id ?? this.id,
       title: title ?? this.title,
       createdAt: createdAt ?? this.createdAt,
       isCompleted: isCompleted ?? this.isCompleted,
+      price: price ?? this.price,
     );
   }
 
@@ -30,6 +34,7 @@ class ShoppingItemEntity {
       'title': title,
       'isCompleted': isCompleted,
       'createdAt': createdAt.millisecondsSinceEpoch,
+      'price': price,
     };
   }
 
@@ -40,6 +45,7 @@ class ShoppingItemEntity {
           ? DateTime.now()
           : DateTime.fromMillisecondsSinceEpoch(data['createdAt']),
       isCompleted: data['isCompleted'],
+      price: (data['price'] ?? 0.0).toDouble(),
       id: data['id'],
     );
   }

@@ -35,6 +35,7 @@ class Dialogs {
     required BuildContext context,
     required String title,
     required TextEditingController controller,
+    required TextEditingController priceController,
     required VoidCallback onConfirm,
   }) {
     showDialog(
@@ -42,10 +43,22 @@ class Dialogs {
       builder: (context) {
         return AlertDialog(
           title: Text(title),
-          content: TextField(
-            controller: controller,
-            decoration:
-                const InputDecoration(hintText: 'Digite o novo nome do item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                    hintText: 'Digite o novo nome do item'),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: priceController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                    hintText: 'Digite o preço (opcional)'),
+              ),
+            ],
           ),
           actions: [
             TextButton(

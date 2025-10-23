@@ -25,43 +25,79 @@ class ChecklistItemWidget extends StatefulWidget {
 class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    print(
+        'ChecklistItemWidget: Construindo item ${widget.item.id} - ${widget.item.title} - Preço: ${widget.item.price}');
+    return ExpansionTile(
       leading: Checkbox(
         activeColor: AppColors.black,
         value: widget.item.isCompleted,
         onChanged: widget.onChanged,
       ),
-      title: Text(
-        widget.item.title,
-        style: TextStyle(
-          decoration: widget.item.isCompleted
-              ? TextDecoration.lineThrough
-              : TextDecoration.none,
-        ),
-      ),
-      subtitle: Text(
-        DateFormat('EEEE (dd/MM/yyyy) - HH:mm').format(widget.item.createdAt),
-        style: AppTextStyles.subtitle,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+      title: Row(
         children: [
-          IconButton(
-            icon: const Icon(
-              Icons.delete,
-              color: AppColors.black,
+          Expanded(
+            child: Text(
+              widget.item.title,
+              style: TextStyle(
+                decoration: widget.item.isCompleted
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
             ),
-            onPressed: widget.onDelete,
           ),
-          IconButton(
-            icon: const Icon(
-              Icons.edit,
-              color: AppColors.black,
-            ),
-            onPressed: widget.onEdit,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.edit,
+                  color: AppColors.black,
+                ),
+                onPressed: widget.onEdit,
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.delete,
+                  color: AppColors.black,
+                ),
+                onPressed: widget.onDelete,
+              ),
+            ],
           ),
         ],
       ),
+      subtitle: Text(
+        'Toque para ver detalhes',
+        style: AppTextStyles.subtitle.copyWith(fontSize: 12),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.attach_money, color: Colors.green, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Preço: R\$ ${widget.item.price.toStringAsFixed(2).replaceAll('.', ',')}',
+                    style: AppTextStyles.subtitle.copyWith(
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '📅 Criado em: ${DateFormat('EEEE (dd/MM/yyyy) - HH:mm', 'pt_BR').format(widget.item.createdAt)}',
+                style: AppTextStyles.subtitle,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

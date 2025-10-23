@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../entities/shopping_item_entity.dart';
 import '../logic/checklist/checklist_state.dart';
-import 'list_section_widget.dart';
+import 'check_item_widget.dart';
 
 class ChecklistItemsBuilder extends StatelessWidget {
   final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
@@ -22,12 +22,15 @@ class ChecklistItemsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('ChecklistItemsBuilder: Reconstruindo widget');
     return BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
       builder: (context, state) {
+        print('ChecklistItemsBuilder: Estado recebido: $state');
         if (state is FetchChecklistLoading) {
           return const CircularProgressIndicator();
         } else if (state is FetchChecklistLoaded) {
           final items = state.items;
+          print('ChecklistItemsBuilder: ${items.length} itens carregados');
 
           final notCompletedItems =
               items.where((item) => !item.isCompleted).toList();
@@ -74,22 +77,88 @@ class ChecklistSections extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListSectionWidget(
-          title: 'Lista de Compras',
-          items: notCompletedItems,
-          onToggleCompletion: (index) =>
-              onToggleCompletion(notCompletedItems[index]),
-          onDeleteItem: (index) => onDeleteItem(notCompletedItems[index]),
-          onEditItem: (index) => onEditItem(notCompletedItems[index]),
-        ),
-        ListSectionWidget(
-          title: 'Comprado',
-          items: completedItems,
-          onToggleCompletion: (index) =>
-              onToggleCompletion(completedItems[index]),
-          onDeleteItem: (index) => onDeleteItem(completedItems[index]),
-          onEditItem: (index) => onEditItem(completedItems[index]),
-        ),
+        // Lista de Compras Section
+        if (notCompletedItems.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              const Icon(
+                Icons.shopping_cart,
+                color: Colors.blue,
+                size: 20,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Lista de Compras (${notCompletedItems.length})',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            height: 1,
+            color: Colors.grey.shade300,
+          ),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: notCompletedItems.length,
+            itemBuilder: (context, index) {
+              return ChecklistItemWidget(
+                item: notCompletedItems[index],
+                onChanged: (value) =>
+                    onToggleCompletion(notCompletedItems[index]),
+                onDelete: () => onDeleteItem(notCompletedItems[index]),
+                onEdit: () => onEditItem(notCompletedItems[index]),
+              );
+            },
+          ),
+        ],
+
+        // Comprado Section
+        if (completedItems.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 20,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Comprado (${completedItems.length})',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            height: 1,
+            color: Colors.grey.shade300,
+          ),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: completedItems.length,
+            itemBuilder: (context, index) {
+              return ChecklistItemWidget(
+                item: completedItems[index],
+                onChanged: (value) => onToggleCompletion(completedItems[index]),
+                onDelete: () => onDeleteItem(completedItems[index]),
+                onEdit: () => onEditItem(completedItems[index]),
+              );
+            },
+          ),
+        ],
       ],
     );
   }

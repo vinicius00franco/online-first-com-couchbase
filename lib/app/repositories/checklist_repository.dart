@@ -28,6 +28,7 @@ class ChecklistRepository {
     required String id,
     String? title,
     bool? isCompleted,
+    double? price,
   }) async {
     await couchbaseService.edit(
       collectionName: collectionName,
@@ -35,6 +36,7 @@ class ChecklistRepository {
       data: {
         if (title != null) 'title': title,
         if (isCompleted != null) 'isCompleted': isCompleted,
+        if (price != null) 'price': price,
       },
     );
   }

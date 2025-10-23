@@ -10,4 +10,4 @@
 
 ## Notas Técnicas
 
-**Collection Padrão**: Motivo da mudança: O Sync Gateway 3.3.0 no modo legacy não suporta configuração de collections específicas, então usamos a collection padrão que funciona com qualquer versão.
+**Collection Padrão**: em agents.md nao quero usar O Sync Gateway 3.3.0 no modo legacy, colocar isso em vez de :

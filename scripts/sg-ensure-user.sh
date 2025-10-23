@@ -13,6 +13,13 @@ BASE="http://localhost:4985"
 info() { echo -e "\033[1;34m[INFO]\033[0m $*"; }
 err()  { echo -e "\033[1;31m[ERR ]\033[0m $*"; }
 
+info "Waiting for Sync Gateway to be ready..."
+until curl -s "$BASE/" >/dev/null; do
+  info "Sync Gateway not ready, waiting..."
+  sleep 2
+done
+info "Sync Gateway is ready."
+
 info "Ensuring user '$USERNAME' exists and has access to _default.checklist_items and _default.testes"
 
 # Create or update user with collection_access

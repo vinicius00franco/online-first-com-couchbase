@@ -10,8 +10,10 @@ import '../helpers/dialogs.dart';
 import '../logic/add_checklist_item/add_checklist_cubit.dart';
 import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
 import '../logic/update_checklist_item/update_checklist_cubit.dart';
+import '../logic/checklist/checklist_state.dart';
 import '../services/couchbase_service.dart';
 import '../widget/checklist_items_widget.dart';
+import '../widget/total_widget.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 
@@ -49,28 +51,42 @@ class _ChecklistPageState extends State<ChecklistPage> {
   // UPDATE ITEM
   void editItem(ShoppingItemEntity item) {
     TextEditingController controller = TextEditingController(text: item.title);
+    TextEditingController priceController = TextEditingController(
+      text: item.price > 0 ? item.price.toString() : '',
+    );
 
     Dialogs.showEditDialog(
       context: context,
       title: 'Editar Item',
       controller: controller,
+      priceController: priceController,
       onConfirm: () async {
+        final newPriceText = priceController.text.trim().replaceAll(',', '.');
+        final newPrice = newPriceText.isEmpty
+            ? 0.0
+            : double.tryParse(newPriceText) ?? item.price;
+        print(
+            'Editando item ${item.id}: título "${controller.text}", preço: $newPrice');
         await context.read<UpdateChecklistCubit>().updateItem(
               item.id!,
               title: controller.text,
+              price: newPrice,
             );
-        context.read<FetchChecklistCubit>().fetchItems();
+        print('Item editado, buscando itens atualizados...');
+        await context.read<FetchChecklistCubit>().fetchItems();
+        print('Itens buscados após edição');
       },
     );
   }
 
   // ADD ITEM
-  Future<void> addItem() async {
+  Future<void> addItem(String title, double price) async {
     await context.read<AddChecklistCubit>().addItem(
           ShoppingItemEntity(
-            title: textController.text,
+            title: title,
             createdAt: DateTime.now(),
             isCompleted: false,
+            price: price,
           ),
         );
     textController.clear();
@@ -123,6 +139,14 @@ class _ChecklistPageState extends State<ChecklistPage> {
               child: Column(
                 children: [
                   InputWidget(controller: textController, onAddItem: addItem),
+                  BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
+                    builder: (context, state) {
+                      if (state is FetchChecklistLoaded) {
+                        return TotalWidget(items: state.items);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                   const SizedBox(height: 48),
                   ChecklistItemsBuilder(
                     onToggleCompletion: (item) => toggleItemCompletion(item),

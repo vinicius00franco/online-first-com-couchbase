@@ -11,12 +11,14 @@ class UpdateChecklistCubit extends Cubit<UpdateChecklistState> {
     String id, {
     String? title,
     bool? isCompleted,
+    double? price,
   }) async {
     try {
       await _repository.updateItem(
         id: id,
         isCompleted: isCompleted,
         title: title,
+        price: price,
       );
       emit(UpdateChecklistSuccess());
     } catch (e) {

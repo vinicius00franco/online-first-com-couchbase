@@ -43,13 +43,26 @@ class CouchbaseService {
       replicator?.addChangeListener((change) {
         final activity = change.status.activity;
         final error = change.status.error;
+        final progress = change.status.progress;
+
         if (error != null) {
-          // Surface error object details
-          print('Erro de replicação: $error');
+          print('❌ ERRO DE REPLICAÇÃO: $error');
         }
+
+        print(
+            '🔄 STATUS DA REPLICAÇÃO: $activity - Progresso: ${progress.completed} documentos processados');
+
         if (activity == ReplicatorActivityLevel.idle) {
-          print('ocorreu uma sincronização');
+          print(
+              '✅ SINCRONIZAÇÃO CONCLUÍDA - ${progress.completed} documentos sincronizados com sucesso');
           onSynced();
+        } else if (activity == ReplicatorActivityLevel.connecting) {
+          print('🔗 CONECTANDO AO SERVIDOR...');
+        } else if (activity == ReplicatorActivityLevel.busy) {
+          print(
+              '⚡ SINCRONIZANDO DADOS... (${progress.completed} documentos processados até agora)');
+        } else if (activity == ReplicatorActivityLevel.stopped) {
+          print('⏹️ REPLICAÇÃO PARADA');
         }
       });
       await replicator?.start();
@@ -59,10 +72,11 @@ class CouchbaseService {
   void networkStatusListen() {
     networkConnection = Connectivity().onConnectivityChanged.listen((events) {
       if (events.contains(ConnectivityResult.none)) {
-        print('sem conexão com a internet');
+        print('🔴 SEM CONEXÃO COM A INTERNET - Parando replicação');
         replicator?.stop();
       } else {
-        print('conectados com a internet');
+        print('🟢 CONECTADO COM A INTERNET - Iniciando replicação');
+        print('🔄 Sincronizando documentos pendentes com o servidor...');
         replicator?.start();
       }
     });
@@ -82,7 +96,10 @@ class CouchbaseService {
         document,
         ConcurrencyControl.lastWriteWins,
       );
-      print('Documento salvo localmente: ${document.id}');
+      print(
+          '📝 DOCUMENTO CRIADO LOCALMENTE: ${document.id} - Dados: ${data.toString()}');
+      print(
+          '🔄 Este documento será sincronizado quando houver conexão com a internet');
       return result;
     }
     return false;
@@ -131,7 +148,10 @@ class CouchbaseService {
           mutableDoc,
           ConcurrencyControl.lastWriteWins,
         );
-        print('Documento editado localmente: $id');
+        print(
+            '✏️ DOCUMENTO EDITADO LOCALMENTE: $id - Novos dados: ${data.toString()}');
+        print(
+            '🔄 Esta edição será sincronizada quando houver conexão com a internet');
         return result;
       }
     }
@@ -153,7 +173,9 @@ class CouchbaseService {
           doc,
           ConcurrencyControl.lastWriteWins,
         );
-        print('Documento deletado localmente: $id');
+        print('🗑️ DOCUMENTO DELETADO LOCALMENTE: $id');
+        print(
+            '🔄 Esta exclusão será sincronizada quando houver conexão com a internet');
         return result;
       }
     }
