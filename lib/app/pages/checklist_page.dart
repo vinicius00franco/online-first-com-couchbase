@@ -14,6 +14,7 @@ import '../logic/checklist/checklist_state.dart';
 import '../services/couchbase_service.dart';
 import '../widget/checklist_items_widget.dart';
 import '../widget/total_widget.dart';
+import '../widget/view_mode_toggle_widget.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';

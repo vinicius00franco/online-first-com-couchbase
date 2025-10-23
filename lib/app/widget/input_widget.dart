@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_text_styles.dart';
-import 'checklist_items_widget.dart';
+import 'custom_text_field_widget.dart';
 
 class InputWidget extends StatefulWidget {
   final TextEditingController controller;
