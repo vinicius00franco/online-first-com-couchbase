@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'checklist_items_widget.dart';
 
 class InputWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -33,34 +33,16 @@ class _InputWidgetState extends State<InputWidget> {
           child: Image.asset('assets/images/bag.png', height: 160),
         ),
         const SizedBox(height: 24),
-        TextField(
+        CustomTextFieldWidget(
           controller: widget.controller,
-          decoration: const InputDecoration(
-            hintText: 'Digite o item que deseja adicionar',
-            hintStyle: TextStyle(color: AppColors.hint),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24.0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24.0)),
-            ),
-          ),
+          hintText: 'Digite o item que deseja adicionar',
           onSubmitted: (value) => _addItem(),
         ),
         const SizedBox(height: 16),
-        TextField(
+        CustomTextFieldWidget(
           controller: _priceController,
+          hintText: 'Digite o preço (opcional)',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(
-            hintText: 'Digite o preço (opcional)',
-            hintStyle: TextStyle(color: AppColors.hint),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24.0)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(24.0)),
-            ),
-          ),
           onSubmitted: (value) => _addItem(),
         ),
         const SizedBox(height: 10),
