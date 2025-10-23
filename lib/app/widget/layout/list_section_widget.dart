@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_text_styles.dart';
+import '../../theme/app_text_styles.dart';
 
-import '../entities/shopping_item_entity.dart';
-import 'check_item_widget.dart';
+import '../../entities/shopping_item_entity.dart';
+import '../check_item_widget.dart';
 import 'separator_widget.dart';
 
 class ListSectionWidget extends StatelessWidget {

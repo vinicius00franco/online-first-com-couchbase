@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_spacing.dart';
-import '../theme/app_theme.dart';
-import 'checklist_items_widget.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_spacing.dart';
+import '../../theme/app_theme.dart';
+import '../checklist_items_widget.dart';
 
 class ViewModeToggleWidget extends StatelessWidget {
   final ViewMode currentView;
@@ -22,8 +22,12 @@ class ViewModeToggleWidget extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => onSwitch(ViewMode.shopping),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewMode.shopping ? Theme.of(context).primaryColor : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewMode.shopping ? AppColors.buttonActiveText : AppColors.buttonInactiveText,
+              backgroundColor: currentView == ViewMode.shopping
+                  ? AppColors.primary
+                  : AppColors.buttonInactive,
+              foregroundColor: currentView == ViewMode.shopping
+                  ? AppColors.onPrimary
+                  : AppColors.onSurface,
               padding: AppSpacing.buttonPadding,
               fixedSize: const Size(double.infinity, AppTheme.buttonHeight),
             ),
@@ -35,8 +39,12 @@ class ViewModeToggleWidget extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => onSwitch(ViewMode.purchased),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewMode.purchased ? Theme.of(context).primaryColor : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewMode.purchased ? AppColors.buttonActiveText : AppColors.buttonInactiveText,
+              backgroundColor: currentView == ViewMode.purchased
+                  ? AppColors.primary
+                  : AppColors.buttonInactive,
+              foregroundColor: currentView == ViewMode.purchased
+                  ? AppColors.onPrimary
+                  : AppColors.onSurface,
               padding: AppSpacing.buttonPadding,
               fixedSize: const Size(double.infinity, AppTheme.buttonHeight),
             ),

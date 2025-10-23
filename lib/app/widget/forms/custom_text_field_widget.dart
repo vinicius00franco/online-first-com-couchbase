@@ -23,8 +23,10 @@ class CustomTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: AppColors.hint),
-        border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
-        focusedBorder: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(24.0))),
+        border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24.0))),
+        focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24.0))),
       ),
       onSubmitted: onSubmitted,
     );

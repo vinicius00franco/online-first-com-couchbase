@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_spacing.dart';
+import '../../theme/app_text_styles.dart';
 
 class PaginationIndicatorWidget extends StatelessWidget {
   final int currentPage;
@@ -19,21 +22,24 @@ class PaginationIndicatorWidget extends StatelessWidget {
           children: List.generate(
             totalPages,
             (index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 8,
-              height: 8,
+              margin: EdgeInsets.symmetric(horizontal: AppSpacing.iconTextGap),
+              width: AppSpacing.sm,
+              height: AppSpacing.sm,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: currentPage == index ? Theme.of(context).primaryColor : Colors.grey[400],
+                color: currentPage == index
+                    ? AppColors.primary
+                    : AppColors.grey400,
               ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: AppSpacing.sm),
           child: Text(
             'Página ${currentPage + 1} de $totalPages',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black54),
+            style: AppTextStyles.caption
+                .copyWith(color: AppColors.onSurfaceVariant),
           ),
         ),
       ],

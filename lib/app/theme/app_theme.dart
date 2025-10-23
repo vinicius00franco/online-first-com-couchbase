@@ -4,24 +4,42 @@ import 'app_text_styles.dart';
 
 class AppTheme {
   static ThemeData light() {
-    // Use the ThemeData constructor that accepts useMaterial3 to avoid
-    // the deprecated use of `useMaterial3` in copyWith.
     final base = ThemeData.light(useMaterial3: true);
 
     return base.copyWith(
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         primary: AppColors.primary,
+        surface: AppColors.surface,
+        onSurface: AppColors.onSurface,
+        outline: AppColors.outline,
       ),
-      primaryColor: AppColors.primary,
       textTheme: AppTextStyles.numansTextTheme(base.textTheme),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, buttonHeight),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+        ),
+      ),
+      cardTheme: const CardThemeData(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(cardRadius)),
+        ),
+      ),
     );
   }
 
-  // Novos para centralizar
+  // === DESIGN TOKENS ===
+  static const double borderRadius = 8.0;
+  static const double cardRadius = 12.0;
+  static const double buttonHeight = 48.0;
+  static const double iconSize = 24.0;
+
+  // === LEGACY TOKENS (TO BE MIGRATED) ===
   static const BorderRadius cardBorderRadius =
       BorderRadius.all(Radius.circular(16));
-  static const double buttonHeight = 60.0; // Altura fixa dos botões
-  static const double iconSize = 20.0; // Tamanho padrão dos ícones
   static const double separatorHeight = 1.0; // Altura das linhas separadoras
 }

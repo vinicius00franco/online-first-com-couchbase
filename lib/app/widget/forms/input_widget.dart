@@ -33,8 +33,7 @@ class _InputWidgetState extends State<InputWidget> {
     return Column(
       children: [
         Center(
-          child:
-              Image.asset('assets/images/bag.png', height: AppSpacing.xxl * 3),
+          child: Image.asset('assets/images/bag.png', height: AppSpacing.xxl * 3),
         ),
         SizedBox(height: AppSpacing.lg),
         CustomTextFieldWidget(
@@ -42,7 +41,7 @@ class _InputWidgetState extends State<InputWidget> {
           hintText: 'Digite o item que deseja adicionar',
           onSubmitted: (value) => _addItem(),
         ),
-        SizedBox(height: AppSpacing.md),
+  SizedBox(height: AppSpacing.md),
         CustomTextFieldWidget(
           controller: _priceController,
           hintText: 'Digite o preço (opcional)',
