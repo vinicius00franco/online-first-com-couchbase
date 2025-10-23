@@ -167,54 +167,9 @@ class _ChecklistPageState extends State<ChecklistPage> {
               child: Column(
                 children: [
                   // Botões de alternância entre "Lista de Compras" e "Comprados"
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _switchView(ViewMode.shopping),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _currentView == ViewMode.shopping
-                                ? Theme.of(context).primaryColor
-                                : AppColors.buttonInactive,
-                            foregroundColor: _currentView == ViewMode.shopping
-                                ? AppColors.buttonActiveText
-                                : AppColors.buttonInactiveText,
-                            padding: AppSpacing.buttonPadding,
-                            fixedSize: const Size(
-                              double.infinity,
-                              AppTheme.buttonHeight,
-                            ),
-                          ),
-                          child: const Text(
-                            'Lista de Compras',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: AppSpacing.buttonGap),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () => _switchView(ViewMode.purchased),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _currentView == ViewMode.purchased
-                                ? Theme.of(context).primaryColor
-                                : AppColors.buttonInactive,
-                            foregroundColor: _currentView == ViewMode.purchased
-                                ? AppColors.buttonActiveText
-                                : AppColors.buttonInactiveText,
-                            padding: AppSpacing.buttonPadding,
-                            fixedSize: const Size(
-                              double.infinity,
-                              AppTheme.buttonHeight,
-                            ),
-                          ),
-                          child: const Text(
-                            'Comprados',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
+                  ViewModeToggleWidget(
+                    currentView: _currentView,
+                    onSwitch: _switchView,
                   ),
                   const SizedBox(height: AppSpacing.sectionGap),
                   // Total
