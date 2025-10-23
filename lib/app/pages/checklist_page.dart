@@ -19,6 +19,7 @@ import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
 import '../utils/logger.dart' as app_logger;
+import '../pages/logs_page.dart';
 
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
@@ -203,6 +204,16 @@ class _ChecklistPageState extends State<ChecklistPage> {
             const SizedBox(height: AppSpacing.bottomPadding),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LogsPage()),
+          );
+        },
+        tooltip: 'Ver Logs do Couchbase',
+        child: const Icon(Icons.bug_report),
       ),
     );
   }
