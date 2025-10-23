@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/app_widget.dart';
+import 'app/utils/logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,9 @@ Future<void> main() async {
   await initializeDateFormatting('pt_BR', null);
 
   await CouchbaseLiteFlutter.init();
+
+  // Inicializar logger
+  Logger.instance.init();
 
   runApp(const MyApp());
 }

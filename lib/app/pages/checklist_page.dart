@@ -18,6 +18,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
+import '../utils/logger.dart' as app_logger;
 
 enum ViewMode { shopping, purchased }
 
@@ -76,16 +77,17 @@ class _ChecklistPageState extends State<ChecklistPage> {
         final newPrice = newPriceText.isEmpty
             ? 0.0
             : double.tryParse(newPriceText) ?? item.price;
-        print(
+        app_logger.Logger.instance.info(
             'Editando item ${item.id}: título "${controller.text}", preço: $newPrice');
         await context.read<UpdateChecklistCubit>().updateItem(
               item.id!,
               title: controller.text,
               price: newPrice,
             );
-        print('Item editado, buscando itens atualizados...');
+        app_logger.Logger.instance
+            .info('Item editado, buscando itens atualizados...');
         await context.read<FetchChecklistCubit>().fetchItems();
-        print('Itens buscados após edição');
+        app_logger.Logger.instance.info('Itens buscados após edição');
       },
     );
   }

@@ -2,6 +2,7 @@ import 'package:checklist/app/entities/shopping_item_entity.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../utils/logger.dart' as app_logger;
 import 'package:intl/intl.dart';
 
 class ChecklistItemWidget extends StatefulWidget {
@@ -25,7 +26,7 @@ class ChecklistItemWidget extends StatefulWidget {
 class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
   @override
   Widget build(BuildContext context) {
-    print(
+    app_logger.Logger.instance.info(
         'ChecklistItemWidget: Construindo item ${widget.item.id} - ${widget.item.title} - Preço: ${widget.item.price}');
     return ExpansionTile(
       leading: Checkbox(

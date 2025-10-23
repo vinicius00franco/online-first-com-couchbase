@@ -9,6 +9,7 @@ import '../entities/shopping_item_entity.dart';
 import '../logic/checklist/checklist_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
+import '../utils/logger.dart' as app_logger;
 import 'check_item_widget.dart';
 
 class ChecklistItemsBuilder extends StatelessWidget {
@@ -27,10 +28,10 @@ class ChecklistItemsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('ChecklistItemsBuilder: Reconstruindo widget');
+    app_logger.Logger.instance.info('ChecklistItemsBuilder: Reconstruindo widget');
     return BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
       builder: (context, state) {
-        print('ChecklistItemsBuilder: Estado recebido: $state');
+        app_logger.Logger.instance.info('ChecklistItemsBuilder: Estado recebido: $state');
         if (state is FetchChecklistLoading) {
           return const CircularProgressIndicator();
         } else if (state is FetchChecklistLoaded) {
@@ -38,7 +39,7 @@ class ChecklistItemsBuilder extends StatelessWidget {
               ? state.items.where((item) => !item.isCompleted).toList()
               : state.items.where((item) => item.isCompleted).toList();
 
-          print(
+          app_logger.Logger.instance.info(
               'ChecklistItemsBuilder: ${items.length} itens carregados para modo $viewMode');
 
           if (items.isEmpty) {

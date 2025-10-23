@@ -4,6 +4,7 @@ import 'package:cbl/cbl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../utils/couchbase_constants.dart';
+import '../utils/logger.dart' as app_logger;
 
 class CouchbaseService {
   AsyncDatabase? database;
@@ -46,23 +47,23 @@ class CouchbaseService {
         final progress = change.status.progress;
 
         if (error != null) {
-          print('❌ ERRO DE REPLICAÇÃO: $error');
+          app_logger.Logger.instance.error('ERRO DE REPLICAÇÃO: $error');
         }
 
-        print(
-            '🔄 STATUS DA REPLICAÇÃO: $activity - Progresso: ${progress.completed} documentos processados');
+        app_logger.Logger.instance.info(
+            'STATUS DA REPLICAÇÃO: $activity - Progresso: ${progress.completed} documentos processados');
 
         if (activity == ReplicatorActivityLevel.idle) {
-          print(
-              '✅ SINCRONIZAÇÃO CONCLUÍDA - ${progress.completed} documentos sincronizados com sucesso');
+          app_logger.Logger.instance.info(
+              'SINCRONIZAÇÃO CONCLUÍDA - ${progress.completed} documentos sincronizados com sucesso');
           onSynced();
         } else if (activity == ReplicatorActivityLevel.connecting) {
-          print('🔗 CONECTANDO AO SERVIDOR...');
+          app_logger.Logger.instance.info('CONECTANDO AO SERVIDOR...');
         } else if (activity == ReplicatorActivityLevel.busy) {
-          print(
-              '⚡ SINCRONIZANDO DADOS... (${progress.completed} documentos processados até agora)');
+          app_logger.Logger.instance.info(
+              'SINCRONIZANDO DADOS... (${progress.completed} documentos processados até agora)');
         } else if (activity == ReplicatorActivityLevel.stopped) {
-          print('⏹️ REPLICAÇÃO PARADA');
+          app_logger.Logger.instance.info('REPLICAÇÃO PARADA');
         }
       });
       await replicator?.start();
@@ -72,11 +73,14 @@ class CouchbaseService {
   void networkStatusListen() {
     networkConnection = Connectivity().onConnectivityChanged.listen((events) {
       if (events.contains(ConnectivityResult.none)) {
-        print('🔴 SEM CONEXÃO COM A INTERNET - Parando replicação');
+        app_logger.Logger.instance
+            .info('SEM CONEXÃO COM A INTERNET - Parando replicação');
         replicator?.stop();
       } else {
-        print('🟢 CONECTADO COM A INTERNET - Iniciando replicação');
-        print('🔄 Sincronizando documentos pendentes com o servidor...');
+        app_logger.Logger.instance
+            .info('CONECTADO COM A INTERNET - Iniciando replicação');
+        app_logger.Logger.instance
+            .info('Sincronizando documentos pendentes com o servidor...');
         replicator?.start();
       }
     });
@@ -96,10 +100,10 @@ class CouchbaseService {
         document,
         ConcurrencyControl.lastWriteWins,
       );
-      print(
-          '📝 DOCUMENTO CRIADO LOCALMENTE: ${document.id} - Dados: ${data.toString()}');
-      print(
-          '🔄 Este documento será sincronizado quando houver conexão com a internet');
+      app_logger.Logger.instance.info(
+          'DOCUMENTO CRIADO LOCALMENTE: ${document.id} - Dados: ${data.toString()}');
+      app_logger.Logger.instance.info(
+          'Este documento será sincronizado quando houver conexão com a internet');
       return result;
     }
     return false;
@@ -124,7 +128,8 @@ class CouchbaseService {
           },
         )
         .toList();
-    print('Documentos buscados localmente: ${data?.length ?? 0}');
+    app_logger.Logger.instance
+        .info('Documentos buscados localmente: ${data?.length ?? 0}');
     return data ?? [];
   }
 
@@ -148,10 +153,10 @@ class CouchbaseService {
           mutableDoc,
           ConcurrencyControl.lastWriteWins,
         );
-        print(
-            '✏️ DOCUMENTO EDITADO LOCALMENTE: $id - Novos dados: ${data.toString()}');
-        print(
-            '🔄 Esta edição será sincronizada quando houver conexão com a internet');
+        app_logger.Logger.instance.info(
+            'DOCUMENTO EDITADO LOCALMENTE: $id - Novos dados: ${data.toString()}');
+        app_logger.Logger.instance.info(
+            'Esta edição será sincronizada quando houver conexão com a internet');
         return result;
       }
     }
@@ -173,9 +178,9 @@ class CouchbaseService {
           doc,
           ConcurrencyControl.lastWriteWins,
         );
-        print('🗑️ DOCUMENTO DELETADO LOCALMENTE: $id');
-        print(
-            '🔄 Esta exclusão será sincronizada quando houver conexão com a internet');
+        app_logger.Logger.instance.info('DOCUMENTO DELETADO LOCALMENTE: $id');
+        app_logger.Logger.instance.info(
+            'Esta exclusão será sincronizada quando houver conexão com a internet');
         return result;
       }
     }
