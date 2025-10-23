@@ -372,6 +372,38 @@ class _ChecklistItemsBuilderState extends State<ChecklistItemsBuilder> {
   }
 }
 
+class ItemsListWidget extends StatelessWidget {
+  final List<ShoppingItemEntity> items;
+  final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
+  final void Function(ShoppingItemEntity) onDeleteItem;
+  final void Function(ShoppingItemEntity) onEditItem;
+
+  const ItemsListWidget({
+    super.key,
+    required this.items,
+    required this.onToggleCompletion,
+    required this.onDeleteItem,
+    required this.onEditItem,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return ChecklistItemWidget(
+          item: items[index],
+          onChanged: (value) => onToggleCompletion(items[index]),
+          onDelete: () => onDeleteItem(items[index]),
+          onEdit: () => onEditItem(items[index]),
+        );
+      },
+    );
+  }
+}
+
 class ChecklistSections extends StatelessWidget {
   final List<ShoppingItemEntity> notCompletedItems;
   final List<ShoppingItemEntity> completedItems;
@@ -405,19 +437,11 @@ class ChecklistSections extends StatelessWidget {
             color: AppColors.sectionSeparator,
           ),
           const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: notCompletedItems.length,
-            itemBuilder: (context, index) {
-              return ChecklistItemWidget(
-                item: notCompletedItems[index],
-                onChanged: (value) =>
-                    onToggleCompletion(notCompletedItems[index]),
-                onDelete: () => onDeleteItem(notCompletedItems[index]),
-                onEdit: () => onEditItem(notCompletedItems[index]),
-              );
-            },
+          ItemsListWidget(
+            items: notCompletedItems,
+            onToggleCompletion: onToggleCompletion,
+            onDeleteItem: onDeleteItem,
+            onEditItem: onEditItem,
           ),
         ],
 
@@ -434,18 +458,11 @@ class ChecklistSections extends StatelessWidget {
             color: AppColors.sectionSeparator,
           ),
           const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: completedItems.length,
-            itemBuilder: (context, index) {
-              return ChecklistItemWidget(
-                item: completedItems[index],
-                onChanged: (value) => onToggleCompletion(completedItems[index]),
-                onDelete: () => onDeleteItem(completedItems[index]),
-                onEdit: () => onEditItem(completedItems[index]),
-              );
-            },
+          ItemsListWidget(
+            items: completedItems,
+            onToggleCompletion: onToggleCompletion,
+            onDeleteItem: onDeleteItem,
+            onEditItem: onEditItem,
           ),
         ],
       ],
