@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../entities/shopping_item_entity.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_colors.dart';
 
 class TotalWidget extends StatelessWidget {
   final List<ShoppingItemEntity> items;
@@ -20,9 +21,9 @@ class TotalWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
+        color: AppColors.totalBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.green.shade200),
+        border: Border.all(color: AppColors.totalBorder),
       ),
       child: Column(
         children: [
@@ -32,14 +33,14 @@ class TotalWidget extends StatelessWidget {
             children: [
               const Icon(
                 Icons.attach_money,
-                color: Colors.green,
+                color: AppColors.priceIcon,
                 size: 24,
               ),
               const SizedBox(width: 8),
               Text(
                 'Total: R\$ ${totalPrice.toStringAsFixed(2).replaceAll('.', ',')}',
                 style: AppTextStyles.sectionTitle(context).copyWith(
-                  color: Colors.green.shade800,
+                  color: AppColors.totalText,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

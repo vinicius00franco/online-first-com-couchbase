@@ -17,4 +17,11 @@ class AppTheme {
       textTheme: AppTextStyles.numansTextTheme(base.textTheme),
     );
   }
+
+  // Novos para centralizar
+  static const BorderRadius cardBorderRadius =
+      BorderRadius.all(Radius.circular(16));
+  static const double buttonHeight = 60.0; // Altura fixa dos botões
+  static const double iconSize = 20.0; // Tamanho padrão dos ícones
+  static const double separatorHeight = 1.0; // Altura das linhas separadoras
 }

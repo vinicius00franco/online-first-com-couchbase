@@ -16,6 +16,23 @@ class AppTextStyles {
   static const TextStyle subtitle = TextStyle(fontSize: 12);
   static const TextStyle hint = TextStyle(color: AppColors.hint);
 
+  // Novos para centralizar
+  static const TextStyle footer = TextStyle(
+    fontSize: 12,
+    color: AppColors.textSecondary,
+    fontWeight: FontWeight.w400,
+  );
+  static const TextStyle itemTitle = TextStyle(
+    fontSize: 16,
+    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle sectionTitleConst = TextStyle(
+    fontSize: 18,
+    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w600,
+  );
+
   static TextTheme numansTextTheme(TextTheme base) =>
       GoogleFonts.numansTextTheme(base);
 }

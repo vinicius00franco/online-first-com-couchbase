@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../entities/shopping_item_entity.dart';
 import '../logic/checklist/checklist_state.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 import 'check_item_widget.dart';
 
 class ChecklistItemsBuilder extends StatelessWidget {
@@ -42,7 +44,7 @@ class ChecklistItemsBuilder extends StatelessWidget {
           if (items.isEmpty) {
             return Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: AppSpacing.sectionTopPadding),
                 Text(
                   viewMode == ViewMode.shopping
                       ? 'Nenhum item na lista de compras'
@@ -56,7 +58,7 @@ class ChecklistItemsBuilder extends StatelessWidget {
 
           return Column(
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: AppSpacing.sectionTopPadding),
               Row(
                 children: [
                   Icon(
@@ -64,11 +66,11 @@ class ChecklistItemsBuilder extends StatelessWidget {
                         ? Icons.shopping_cart
                         : Icons.check_circle,
                     color: viewMode == ViewMode.shopping
-                        ? Colors.blue
-                        : Colors.green,
+                        ? AppColors.shoppingIcon
+                        : AppColors.purchasedIcon,
                     size: 20,
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: AppSpacing.iconTextGap),
                   Text(
                     viewMode == ViewMode.shopping
                         ? 'Lista de Compras (${items.length})'
@@ -80,10 +82,10 @@ class ChecklistItemsBuilder extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.titleSeparatorGap),
               Container(
                 height: 1,
-                color: Colors.grey.shade300,
+                color: AppColors.sectionSeparator,
               ),
               const SizedBox(height: 16),
               ListView.builder(
@@ -135,15 +137,15 @@ class ChecklistSections extends StatelessWidget {
       children: [
         // Lista de Compras Section
         if (notCompletedItems.isNotEmpty) ...[
-          const SizedBox(height: 20),
+          SizedBox(height: AppSpacing.sectionTopPadding),
           Row(
             children: [
               const Icon(
                 Icons.shopping_cart,
-                color: Colors.blue,
+                color: AppColors.shoppingIcon,
                 size: 20,
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: AppSpacing.iconTextGap),
               Text(
                 'Lista de Compras (${notCompletedItems.length})',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -153,10 +155,10 @@ class ChecklistSections extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.titleSeparatorGap),
           Container(
             height: 1,
-            color: Colors.grey.shade300,
+            color: AppColors.sectionSeparator,
           ),
           const SizedBox(height: 16),
           ListView.builder(
@@ -177,15 +179,15 @@ class ChecklistSections extends StatelessWidget {
 
         // Comprado Section
         if (completedItems.isNotEmpty) ...[
-          const SizedBox(height: 20),
+          SizedBox(height: AppSpacing.sectionTopPadding),
           Row(
             children: [
               const Icon(
                 Icons.check_circle,
-                color: Colors.green,
+                color: AppColors.purchasedIcon,
                 size: 20,
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: AppSpacing.iconTextGap),
               Text(
                 'Comprado (${completedItems.length})',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -195,10 +197,10 @@ class ChecklistSections extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.titleSeparatorGap),
           Container(
             height: 1,
-            color: Colors.grey.shade300,
+            color: AppColors.sectionSeparator,
           ),
           const SizedBox(height: 16),
           ListView.builder(

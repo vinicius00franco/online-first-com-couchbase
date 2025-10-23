@@ -78,12 +78,13 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.attach_money, color: Colors.green, size: 16),
+                  const Icon(Icons.attach_money,
+                      color: AppColors.priceIcon, size: 16),
                   const SizedBox(width: 4),
                   Text(
                     'Preço: R\$ ${widget.item.price.toStringAsFixed(2).replaceAll('.', ',')}',
                     style: AppTextStyles.subtitle.copyWith(
-                      color: Colors.green.shade700,
+                      color: AppColors.priceText,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

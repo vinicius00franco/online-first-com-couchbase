@@ -16,6 +16,8 @@ import '../widget/checklist_items_widget.dart';
 import '../widget/total_widget.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/app_theme.dart';
 
 enum ViewMode { shopping, purchased }
 
@@ -140,10 +142,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
           children: [
             // Seção 1: Input de itens
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              margin: AppSpacing.cardMargin,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.cardBackground,
+                borderRadius: AppTheme.cardBorderRadius,
               ),
               padding: AppSpacing.cardPadding,
               child:
@@ -151,14 +153,14 @@ class _ChecklistPageState extends State<ChecklistPage> {
             ),
 
             // Espaçamento entre seções
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.sectionGap),
 
             // Seção 2: Controles, Total e Lista de itens
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+              margin: AppSpacing.horizontal16,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                color: AppColors.cardBackground,
+                borderRadius: AppTheme.cardBorderRadius,
               ),
               padding: AppSpacing.cardPadding,
               child: Column(
@@ -172,13 +174,13 @@ class _ChecklistPageState extends State<ChecklistPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _currentView == ViewMode.shopping
                                 ? Theme.of(context).primaryColor
-                                : Colors.grey.shade300,
+                                : AppColors.buttonInactive,
                             foregroundColor: _currentView == ViewMode.shopping
-                                ? Colors.white
-                                : Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 16),
-                            fixedSize: const Size(double.infinity, 60),
+                                ? AppColors.buttonActiveText
+                                : AppColors.buttonInactiveText,
+                            padding: AppSpacing.buttonPadding,
+                            fixedSize: const Size(
+                                double.infinity, AppTheme.buttonHeight),
                           ),
                           child: const Text(
                             'Lista de Compras',
@@ -186,20 +188,20 @@ class _ChecklistPageState extends State<ChecklistPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: AppSpacing.buttonGap),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () => _switchView(ViewMode.purchased),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _currentView == ViewMode.purchased
                                 ? Theme.of(context).primaryColor
-                                : Colors.grey.shade300,
+                                : AppColors.buttonInactive,
                             foregroundColor: _currentView == ViewMode.purchased
-                                ? Colors.white
-                                : Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 16),
-                            fixedSize: const Size(double.infinity, 60),
+                                ? AppColors.buttonActiveText
+                                : AppColors.buttonInactiveText,
+                            padding: AppSpacing.buttonPadding,
+                            fixedSize: const Size(
+                                double.infinity, AppTheme.buttonHeight),
                           ),
                           child: const Text(
                             'Comprados',
@@ -209,7 +211,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.sectionGap),
                   // Total
                   BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
                     builder: (context, state) {
@@ -219,7 +221,7 @@ class _ChecklistPageState extends State<ChecklistPage> {
                       return const SizedBox.shrink();
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: AppSpacing.sectionGap),
                   // Lista de itens
                   ChecklistItemsBuilder(
                     viewMode: _currentView,
@@ -234,11 +236,11 @@ class _ChecklistPageState extends State<ChecklistPage> {
             const Center(
               child: Text(
                 'Desenvolvido por Alura. Projeto fictício sem fins comerciais.',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: AppTextStyles.footer,
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: AppSpacing.bottomPadding),
           ],
         ),
       ),
