@@ -6,9 +6,10 @@ import 'package:crypto/crypto.dart';
 import 'package:checklist/app/entities/user_entity.dart';
 import 'package:checklist/app/helpers/auth_exceptions.dart';
 import 'package:checklist/app/services/couchbase_service.dart';
+import 'package:checklist/app/utils/couchbase_constants.dart';
 
 class UserRepository {
-  static const userCollection = 'users';
+  static String get userCollection => CouchbaseContants.userCollection;
 
   final CouchbaseService couchbaseService;
 

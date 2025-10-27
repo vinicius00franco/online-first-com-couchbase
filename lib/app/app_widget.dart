@@ -5,11 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'logic/add_checklist_item/add_checklist_cubit.dart';
+import 'logic/auth/auth_cubit.dart';
 import 'logic/checklist/checklist_cubit.dart';
 import 'logic/delete_checklist_item/delete_checklist_cubit.dart';
 import 'logic/update_checklist_item/update_checklist_cubit.dart';
-import 'pages/checklist_page.dart';
+import 'pages/auth/auth_gate.dart';
 import 'repositories/checklist_repository.dart';
+import 'repositories/user_repository.dart';
 import 'services/couchbase_service.dart';
 
 class MyApp extends StatelessWidget {
@@ -60,12 +62,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('🎨 [MYAPP] Iniciando construção do MaterialApp...');
+    '🎨 [MYAPP] Iniciando construção do MaterialApp...');
 
     final theme = AppTheme.light();
-    print('🎨 [MYAPP] Tema criado: ${theme.primaryColor}');
+    '🎨 [MYAPP] Tema criado: ${theme.primaryColor}');
 
-    print('🎨 [MYAPP] Criando MultiProvider...');
+    '🎨 [MYAPP] Criando MultiProvider...');
 
     return MultiProvider(
       providers: [
@@ -98,16 +100,26 @@ class MyApp extends StatelessWidget {
             context.read<ChecklistRepository>(),
           ),
         ),
+        Provider(
+          create: (context) => UserRepository(
+            couchbaseService: context.read<CouchbaseService>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => AuthCubit(
+            context.read<UserRepository>(),
+          ),
+        ),
       ],
       child: Builder(
         builder: (context) {
-          print('🎨 [MYAPP] Construindo MaterialApp...');
+          '🎨 [MYAPP] Construindo MaterialApp...');
 
           return MaterialApp(
             title: 'Checklist',
             locale: const Locale('pt', 'BR'),
             theme: theme,
-            home: const ChecklistPage(),
+            home: const AuthGate(),
             debugShowCheckedModeBanner: false,
           );
         },

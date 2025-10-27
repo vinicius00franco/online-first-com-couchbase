@@ -22,13 +22,13 @@ Future<void> main() async {
     await CouchbaseLiteFlutter.init(autoEnableVectorSearch: false);
   } on ArgumentError catch (e, s) {
     // Se alguma parte tentar carregar a lib de Vector Search mesmo assim, apenas logamos
-    debugPrint('Vector Search não disponível (ignorado): $e');
-    debugPrint('Stack: $s');
+    debug'Vector Search não disponível (ignorado): $e');
+    debug'Stack: $s');
   } catch (e, s) {
     // Se falhar ao inicializar Couchbase Lite por outro motivo, loga o erro mas continua
-    debugPrint('Aviso ao inicializar Couchbase Lite: $e');
-    debugPrint('Stack: $s');
-    debugPrint('Continuando com a inicialização do app...');
+    debug'Aviso ao inicializar Couchbase Lite: $e');
+    debug'Stack: $s');
+    debug'Continuando com a inicialização do app...');
   }
 
   runApp(const MyApp());

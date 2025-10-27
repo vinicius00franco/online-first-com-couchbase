@@ -15,6 +15,7 @@ class CouchbaseService {
   }
 
   Future<void> startReplication({required Function() onSynced}) async {
+    await init();
     final collection = await database?.createCollection(
       CouchbaseContants.collection,
       CouchbaseContants.scope,
@@ -39,6 +40,22 @@ class CouchbaseService {
           }),
         ),
       );
+
+      final userCollection = await database?.createCollection(
+        CouchbaseContants.userCollection,
+        CouchbaseContants.scope,
+      );
+      if (userCollection != null) {
+        replicatorConfig.addCollection(
+          userCollection,
+          CollectionConfiguration(
+            channels: [CouchbaseContants.userChannel],
+            conflictResolver: ConflictResolver.from((conflict) {
+              return conflict.remoteDocument ?? conflict.localDocument;
+            }),
+          ),
+        );
+      }
       replicator = await Replicator.createAsync(replicatorConfig);
 
       replicator?.addChangeListener((change) {

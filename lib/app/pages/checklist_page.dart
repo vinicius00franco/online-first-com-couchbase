@@ -9,6 +9,7 @@ import '../entities/shopping_item_entity.dart';
 import '../entities/view_mode_enum.dart';
 import '../helpers/dialogs.dart';
 import '../logic/add_checklist_item/add_checklist_cubit.dart';
+import '../logic/auth/auth_cubit.dart';
 import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
 import '../logic/update_checklist_item/update_checklist_cubit.dart';
 import '../logic/checklist/checklist_state.dart';
@@ -20,6 +21,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
+import 'auth/profile_page.dart';
 
 class ChecklistPage extends StatefulWidget {
   const ChecklistPage({super.key});
@@ -127,6 +129,34 @@ class _ChecklistPageState extends State<ChecklistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Checklist'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: 'Perfil',
+            icon: const Icon(Icons.person_outline),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<AuthCubit>(),
+                    child: const UserProfilePage(),
+                  ),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            tooltip: 'Sair',
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthCubit>().logout();
+            },
+          ),
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

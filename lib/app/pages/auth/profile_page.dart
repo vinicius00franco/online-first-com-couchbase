@@ -68,7 +68,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) =>
-          current is AuthError || current is AuthAuthenticated,
+          current is AuthError || current is AuthAuthenticated || current is AuthUnauthenticated,
       listener: (context, state) {
         if (state is AuthError) {
           ScaffoldMessenger.of(context)
@@ -85,6 +85,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ..showSnackBar(
               const SnackBar(content: Text('Dados atualizados com sucesso.')),
             );
+        }
+        if (state is AuthUnauthenticated && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
         }
       },
       child: Scaffold(
