@@ -62,12 +62,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    '🎨 [MYAPP] Iniciando construção do MaterialApp...');
-
     final theme = AppTheme.light();
-    '🎨 [MYAPP] Tema criado: ${theme.primaryColor}');
-
-    '🎨 [MYAPP] Criando MultiProvider...');
 
     return MultiProvider(
       providers: [
@@ -113,8 +108,6 @@ class MyApp extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) {
-          '🎨 [MYAPP] Construindo MaterialApp...');
-
           return MaterialApp(
             title: 'Checklist',
             locale: const Locale('pt', 'BR'),

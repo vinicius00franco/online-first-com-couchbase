@@ -3,8 +3,6 @@ import 'package:checklist/app/repositories/user_repository.dart';
 import 'package:checklist/app/services/couchbase_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:checklist/app/entities/user_entity.dart';
-
 class FakeCouchbaseService extends CouchbaseService {
   final Map<String, Map<String, Map<String, dynamic>>> _collections = {};
   int _counter = 0;
