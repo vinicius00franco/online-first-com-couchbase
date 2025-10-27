@@ -19,39 +19,28 @@ class ViewModeToggleWidget extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: ElevatedButton(
-            onPressed: () => onSwitch(ViewModeEnum.shopping),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewModeEnum.shopping
-                  ? AppColors.primary
-                  : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewModeEnum.shopping
-                  ? AppColors.onPrimary
-                  : AppColors.onSurface,
-              padding: AppSpacing.buttonPadding,
-              fixedSize: const Size(double.infinity, AppTheme.buttonHeight),
-            ),
-            child: const Text('Lista de Compras', textAlign: TextAlign.center),
-          ),
+          child: _buildButton(ViewModeEnum.shopping, Icons.shopping_cart),
         ),
         const SizedBox(width: AppSpacing.buttonGap),
         Expanded(
-          child: ElevatedButton(
-            onPressed: () => onSwitch(ViewModeEnum.purchased),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewModeEnum.purchased
-                  ? AppColors.primary
-                  : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewModeEnum.purchased
-                  ? AppColors.onPrimary
-                  : AppColors.onSurface,
-              padding: AppSpacing.buttonPadding,
-              fixedSize: const Size(double.infinity, AppTheme.buttonHeight),
-            ),
-            child: const Text('Comprados', textAlign: TextAlign.center),
-          ),
+          child: _buildButton(ViewModeEnum.purchased, Icons.check),
         ),
       ],
+    );
+  }
+
+  Widget _buildButton(ViewModeEnum mode, IconData icon) {
+    final isSelected = currentView == mode;
+    return ElevatedButton(
+      onPressed: () => onSwitch(mode),
+      style: ElevatedButton.styleFrom(
+        backgroundColor:
+            isSelected ? AppColors.primary : AppColors.buttonInactive,
+        foregroundColor: isSelected ? AppColors.onPrimary : AppColors.onSurface,
+        padding: AppSpacing.buttonPadding,
+        fixedSize: const Size(double.infinity, AppTheme.buttonHeight),
+      ),
+      child: Icon(icon),
     );
   }
 }

@@ -48,7 +48,11 @@ No código, a replicação é definida por coleção (addCollection) e canal, em
 ### Boas Práticas de Código e Design
 - **Widgets**: Preferir composição a herança; manter widgets pequenos e atômicos; usar `const` para imutabilidade e performance.
 - **Nomenclatura (Dart Lints)**: Classes/Enums em PascalCase; funções/variáveis/arquivos em snake_case; usar `final` para imutabilidade.
-- **Princípios SOLID**: S (Responsabilidade Única); D (Inversão de Dependência) via interfaces para independência de framework.
+### Práticas de Desenvolvimento com TDD
+- **TDD (Test-Driven Development)**: Sempre escreva testes antes do código. Ciclo: Red (teste falha) → Green (implementação mínima passa) → Refactor (melhore código mantendo testes).
+- **Refatoração**: Após passar, refatore seguindo princípios SOLID para manutenibilidade, testabilidade e escalabilidade.
+- **Cobertura de Testes**: Foque em testes unitários para widgets e lógica; use mocks para dependências externas (ex.: Couchbase).
+- **Integração com Design System**: Testes devem validar uso correto de `AppColors`, `AppTextStyles` e tokens para consistência.
 
 ## Design System
 
