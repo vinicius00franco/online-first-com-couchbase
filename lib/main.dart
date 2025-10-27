@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/app_widget.dart';
-import 'app/utils/couchbase_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,15 +29,6 @@ Future<void> main() async {
     debugPrint('Aviso ao inicializar Couchbase Lite: $e');
     debugPrint('Stack: $s');
     debugPrint('Continuando com a inicialização do app...');
-  }
-
-  // Configurar logging do Couchbase Lite (não deve falhar, mas cercamos por segurança)
-  try {
-    await CouchbaseConfig.configureLogging();
-  } catch (e, s) {
-    debugPrint(
-        'Falha ao configurar logging do Couchbase Lite (seguindo adiante): $e');
-    debugPrint('Stack: $s');
   }
 
   runApp(const MyApp());
