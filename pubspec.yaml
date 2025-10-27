@@ -45,6 +45,7 @@ dependencies:
   cbl: ">=3.5.0 <3.6.0"
   cbl_flutter: 3.3.2
   cbl_flutter_ce: ^3.4.0
+  crypto: ^3.0.3
   
   connectivity_plus: ^7.0.0
   flutter_dotenv: ^6.0.0
@@ -53,6 +54,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.3
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

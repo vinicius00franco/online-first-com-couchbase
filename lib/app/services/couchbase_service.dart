@@ -63,23 +63,26 @@ class CouchbaseService {
     });
   }
 
-  Future<bool> add({
+  Future<String?> add({
     required Map<String, dynamic> data,
     required String collectionName,
+    String? documentId,
   }) async {
     final collection = await database?.createCollection(
       collectionName,
       CouchbaseContants.scope,
     );
     if (collection != null) {
-      final document = MutableDocument(data);
+      final document = documentId != null
+          ? MutableDocument.withId(documentId, data)
+          : MutableDocument(data);
       final result = await collection.saveDocument(
         document,
         ConcurrencyControl.lastWriteWins,
       );
-      return result;
+      return result ? document.id : null;
     }
-    return false;
+    return null;
   }
 
   Future<List<Map<String, dynamic>>> fetch({
