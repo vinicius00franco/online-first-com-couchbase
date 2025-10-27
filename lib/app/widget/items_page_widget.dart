@@ -18,7 +18,7 @@ class ItemsPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: items.map((item) {
         return ChecklistItemWidget(
           item: item,
