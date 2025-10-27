@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_text_styles.dart';
-import '../checklist_items_widget.dart';
+import '../../entities/view_mode_enum.dart';
 
 class EmptyStateWidget extends StatelessWidget {
-  final ViewMode viewMode;
+  final ViewModeEnum viewMode;
 
   const EmptyStateWidget({
     super.key,
@@ -17,12 +17,12 @@ class EmptyStateWidget extends StatelessWidget {
       children: [
         const SizedBox(height: AppSpacing.sectionTopPadding),
         Text(
-          viewMode == ViewMode.shopping
+          viewMode == ViewModeEnum.shopping
               ? 'Nenhum item na lista de compras'
               : 'Nenhum item comprado',
           style: AppTextStyles.bodyLarge,
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
       ],
     );
   }

@@ -4,7 +4,6 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_theme.dart';
-import '../utils/logger.dart' as app_logger;
 import 'package:intl/intl.dart';
 
 class ChecklistItemWidget extends StatefulWidget {
@@ -28,8 +27,6 @@ class ChecklistItemWidget extends StatefulWidget {
 class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
   @override
   Widget build(BuildContext context) {
-    app_logger.Logger.instance.info(
-        'ChecklistItemWidget: Construindo item ${widget.item.id} - ${widget.item.title} - Preço: ${widget.item.price}');
     return ExpansionTile(
       leading: Checkbox(
         activeColor: AppColors.onSurface,
@@ -69,7 +66,7 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
           ),
         ],
       ),
-      subtitle: Text(
+      subtitle: const Text(
         'Toque para ver detalhes',
         style: AppTextStyles.bodySmall,
       ),
@@ -81,6 +78,7 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
             children: [
               Row(
                 children: [
+                  // ignore: prefer_const_constructors
                   Icon(Icons.attach_money,
                       color: AppColors.priceIcon, size: AppTheme.iconSize),
                   const SizedBox(width: AppSpacing.xs),
@@ -93,7 +91,7 @@ class _ChecklistItemWidgetState extends State<ChecklistItemWidget> {
                   ),
                 ],
               ),
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 '📅 Criado em: ${DateFormat('EEEE (dd/MM/yyyy) - HH:mm', 'pt_BR').format(widget.item.createdAt)}',
                 style: AppTextStyles.subtitle,

@@ -33,7 +33,7 @@ class TotalWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.attach_money,
                 color: AppColors.priceIcon,
                 size: AppTheme.iconSize,

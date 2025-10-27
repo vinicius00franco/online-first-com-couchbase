@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../entities/shopping_item_entity.dart';
+import '../entities/view_mode_enum.dart';
 import '../helpers/dialogs.dart';
 import '../logic/add_checklist_item/add_checklist_cubit.dart';
 import '../logic/delete_checklist_item/delete_checklist_cubit.dart';
@@ -13,13 +14,12 @@ import '../logic/update_checklist_item/update_checklist_cubit.dart';
 import '../logic/checklist/checklist_state.dart';
 import '../services/couchbase_service.dart';
 import '../widget/checklist_items_widget.dart';
-import '../widget/estado_controle/total_widget.dart';
-import '../widget/estado_controle/view_mode_toggle_widget.dart';
+import '../widget/controls/total_widget.dart';
+import '../widget/controls/view_mode_toggle_widget.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';
-import '../utils/logger.dart' as app_logger;
 import '../pages/logs_page.dart';
 
 class ChecklistPage extends StatefulWidget {
@@ -32,9 +32,9 @@ class ChecklistPage extends StatefulWidget {
 class _ChecklistPageState extends State<ChecklistPage> {
   final textController = TextEditingController();
   // Alternância entre listas (Lista de Compras x Comprados)
-  ViewMode _currentView = ViewMode.shopping;
+  ViewModeEnum _currentView = ViewModeEnum.shopping;
 
-  void _switchView(ViewMode mode) {
+  void _switchView(ViewModeEnum mode) {
     setState(() {
       _currentView = mode;
     });
@@ -78,17 +78,12 @@ class _ChecklistPageState extends State<ChecklistPage> {
         final newPrice = newPriceText.isEmpty
             ? 0.0
             : double.tryParse(newPriceText) ?? item.price;
-        app_logger.Logger.instance.info(
-            'Editando item ${item.id}: título "${controller.text}", preço: $newPrice');
         await context.read<UpdateChecklistCubit>().updateItem(
               item.id!,
               title: controller.text,
               price: newPrice,
             );
-        app_logger.Logger.instance
-            .info('Item editado, buscando itens atualizados...');
         await context.read<FetchChecklistCubit>().fetchItems();
-        app_logger.Logger.instance.info('Itens buscados após edição');
       },
     );
   }

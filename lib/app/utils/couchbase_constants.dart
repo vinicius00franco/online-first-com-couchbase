@@ -10,5 +10,4 @@ class CouchbaseContants {
   static String scope = dotenv.env['SCOPE_NAME'] ?? '_default';
   static String collection = dotenv.env['COLLECTION_NAME'] ?? 'checklist_items';
   static String channel = dotenv.env['CHANNEL'] ?? 'checklist_items';
-  static String logCollection = dotenv.env['LOG_COLLECTION'] ?? 'app_logs';
 }

@@ -32,3 +32,25 @@ else
 fi
 
 info "Done. If needed, restart your Flutter app to reload .env." 
+
+info "Configuring Sync Gateway database and user..."
+"$ROOT_DIR/scripts/sg-configure-db.sh"
+
+# Read credentials from .env if available
+if [[ -f "$ROOT_DIR/.env" ]]; then
+  source "$ROOT_DIR/.env"
+  USER="${USER_NAME:-your_username}"
+  PASS="${USER_PASSWORD:-your_password}"
+else
+  USER="your_username"
+  PASS="your_password"
+fi
+
+"$ROOT_DIR/scripts/sg-ensure-user.sh" "$USER" "$PASS"
+
+info "✅ Development environment ready!"
+info "   - Couchbase Server: http://localhost:8091 (Administrator/password)"
+info "   - Sync Gateway Admin: http://localhost:4985"
+info "   - Sync Gateway Public: ws://localhost:4984/checklist_db"
+info "   - User: $USER"
+ 

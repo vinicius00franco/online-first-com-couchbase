@@ -35,3 +35,15 @@ curl -X POST http://Administrator:password@localhost:8091/pools/default/buckets 
   -d saslPassword=
 
 echo "Couchbase inicializado."
+
+# Criar coleções necessárias no escopo _default
+echo "Criando coleções no bucket checklist_db (_default scope)..."
+curl -u Administrator:password -X POST \
+  http://localhost:8091/pools/default/buckets/checklist_db/scopes/_default/collections \
+  -d name=checklist_items || true
+
+curl -u Administrator:password -X POST \
+  http://localhost:8091/pools/default/buckets/checklist_db/scopes/_default/collections \
+  -d name=testes || true
+
+echo "Coleções criadas (ou já existentes)."

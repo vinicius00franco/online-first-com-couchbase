@@ -36,20 +36,20 @@ class _InputWidgetState extends State<InputWidget> {
           child:
               Image.asset('assets/images/bag.png', height: AppSpacing.xxl * 3),
         ),
-        SizedBox(height: AppSpacing.lg),
+        const SizedBox(height: AppSpacing.lg),
         CustomTextFieldWidget(
           controller: widget.controller,
           hintText: 'Digite o item que deseja adicionar',
           onSubmitted: (value) => _addItem(),
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         CustomTextFieldWidget(
           controller: _priceController,
           hintText: 'Digite o preço (opcional)',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) => _addItem(),
         ),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         ElevatedButton(
           onPressed: _addItem,
           style: ElevatedButton.styleFrom(

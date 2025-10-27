@@ -2,7 +2,6 @@ import 'package:checklist/app/entities/shopping_item_entity.dart';
 
 import '../services/couchbase_service.dart';
 import '../utils/couchbase_constants.dart';
-import '../utils/logger.dart' as app_logger;
 
 class ChecklistRepository {
   final CouchbaseService couchbaseService;
@@ -22,7 +21,6 @@ class ChecklistRepository {
       data: item.toMap(),
       collectionName: collectionName,
     );
-    app_logger.Logger.instance.info('Item salvo: ${item.title}');
   }
 
   Future<void> updateItem({

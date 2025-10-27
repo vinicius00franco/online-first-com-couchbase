@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../entities/shopping_item_entity.dart';
 import 'check_item_widget.dart';
 
-class ItemsListWidget extends StatelessWidget {
+class ItemsPageWidget extends StatelessWidget {
   final List<ShoppingItemEntity> items;
   final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
   final void Function(ShoppingItemEntity) onDeleteItem;
   final void Function(ShoppingItemEntity) onEditItem;
 
-  const ItemsListWidget({
+  const ItemsPageWidget({
     super.key,
     required this.items,
     required this.onToggleCompletion,
@@ -18,18 +18,15 @@ class ItemsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
+    return Column(
+      children: items.map((item) {
         return ChecklistItemWidget(
-          item: items[index],
-          onChanged: (value) => onToggleCompletion(items[index]),
-          onDelete: () => onDeleteItem(items[index]),
-          onEdit: () => onEditItem(items[index]),
+          item: item,
+          onChanged: (value) => onToggleCompletion(item),
+          onDelete: () => onDeleteItem(item),
+          onEdit: () => onEditItem(item),
         );
-      },
+      }).toList(),
     );
   }
 }

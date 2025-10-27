@@ -1,0 +1,1 @@
+enum ViewModeEnum { shopping, purchased }

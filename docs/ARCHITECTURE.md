@@ -117,19 +117,6 @@ static String channel = dotenv.env['CHANNEL'] ?? 'checklist_items';
 'SELECT META().id, * FROM ${scope}.${collection}'
 ```
 
-## 📝 Sistema de Logging
-
-### Características
-- **Logger Singleton** com persistência local
-- **Logs estruturados** por operação
-- **Coleção separada** (`app_logs`) para auditoria
-- **Debug de sincronização** em tempo real
-
-```dart
-// Logging integrado em cada operação
-app_logger.Logger.instance.info('Item salvo: ${item.title}');
-```
-
 ## 🎨 Design System
 
 ### Tokens Principais
@@ -200,7 +187,6 @@ onSynced: () {
 
 - ✅ **CRUD completo** offline-first
 - 🔄 **Sincronização automática** bidirecional
-- 📊 **Sistema de logs** integrado
 - 🎨 **Design system** consistente
 - 🌐 **Configuração flexível** via environment
 - 🔧 **Scripts de desenvolvimento** automatizados
@@ -213,7 +199,6 @@ onSynced: () {
 - Componentes reutilizáveis
 
 ### Manutenibilidade
-- Logging distribuído para debug
 - Configuração centralizada
 - Design system evolutivo
 
@@ -224,4 +209,4 @@ onSynced: () {
 
 ---
 
-Esta arquitetura representa um **sistema offline-first maduro** com sincronização bidirecional, logging distribuído e design system evolutivo - características avançadas para aplicações móveis empresariais.
+Esta arquitetura representa um **sistema offline-first maduro** com sincronização bidirecional e design system evolutivo - características avançadas para aplicações móveis empresariais.

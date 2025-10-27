@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_theme.dart';
-import '../checklist_items_widget.dart';
+import '../../entities/view_mode_enum.dart';
 
 class ViewModeToggleWidget extends StatelessWidget {
-  final ViewMode currentView;
-  final void Function(ViewMode) onSwitch;
+  final ViewModeEnum currentView;
+  final void Function(ViewModeEnum) onSwitch;
 
   const ViewModeToggleWidget({
     super.key,
@@ -20,12 +20,12 @@ class ViewModeToggleWidget extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () => onSwitch(ViewMode.shopping),
+            onPressed: () => onSwitch(ViewModeEnum.shopping),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewMode.shopping
+              backgroundColor: currentView == ViewModeEnum.shopping
                   ? AppColors.primary
                   : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewMode.shopping
+              foregroundColor: currentView == ViewModeEnum.shopping
                   ? AppColors.onPrimary
                   : AppColors.onSurface,
               padding: AppSpacing.buttonPadding,
@@ -37,12 +37,12 @@ class ViewModeToggleWidget extends StatelessWidget {
         const SizedBox(width: AppSpacing.buttonGap),
         Expanded(
           child: ElevatedButton(
-            onPressed: () => onSwitch(ViewMode.purchased),
+            onPressed: () => onSwitch(ViewModeEnum.purchased),
             style: ElevatedButton.styleFrom(
-              backgroundColor: currentView == ViewMode.purchased
+              backgroundColor: currentView == ViewModeEnum.purchased
                   ? AppColors.primary
                   : AppColors.buttonInactive,
-              foregroundColor: currentView == ViewMode.purchased
+              foregroundColor: currentView == ViewModeEnum.purchased
                   ? AppColors.onPrimary
                   : AppColors.onSurface,
               padding: AppSpacing.buttonPadding,

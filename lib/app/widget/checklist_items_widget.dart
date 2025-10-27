@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../entities/shopping_item_entity.dart';
+import '../entities/view_mode_enum.dart';
 import '../logic/checklist/checklist_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
-import '../utils/logger.dart' as app_logger;
 import '../theme/app_theme.dart';
 import 'ui/section_header_widget.dart';
 import 'ui/pagination_indicator_widget.dart';
 import 'items_page_widget.dart';
-import 'estado_controle/empty_state_widget.dart';
-
-enum ViewMode { shopping, purchased }
+import 'controls/empty_state_widget.dart';
 
 class ChecklistItemsBuilder extends StatefulWidget {
-  final ViewMode viewMode; // Alterna entre listas
+  final ViewModeEnum viewMode; // Alterna entre listas
   final Future<void> Function(ShoppingItemEntity) onToggleCompletion;
   final void Function(ShoppingItemEntity) onDeleteItem;
   final void Function(ShoppingItemEntity) onEditItem;
@@ -49,21 +47,14 @@ class _ChecklistItemsBuilderState extends State<ChecklistItemsBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    app_logger.Logger.instance
-        .info('ChecklistItemsBuilder: Reconstruindo widget');
     return BlocBuilder<FetchChecklistCubit, FetchChecklistState>(
       builder: (context, state) {
-        app_logger.Logger.instance
-            .info('ChecklistItemsBuilder: Estado recebido: $state');
         if (state is FetchChecklistLoading) {
           return const CircularProgressIndicator();
         } else if (state is FetchChecklistLoaded) {
-          final all = widget.viewMode == ViewMode.shopping
+          final all = widget.viewMode == ViewModeEnum.shopping
               ? state.items.where((item) => !item.isCompleted).toList()
               : state.items.where((item) => item.isCompleted).toList();
-
-          app_logger.Logger.instance.info(
-              'ChecklistItemsBuilder: ${all.length} itens carregados para modo ${widget.viewMode}');
 
           if (all.isEmpty) {
             return EmptyStateWidget(viewMode: widget.viewMode);
@@ -88,11 +79,11 @@ class _ChecklistItemsBuilderState extends State<ChecklistItemsBuilder> {
                 itemCount: all.length,
               ),
               const SizedBox(height: AppSpacing.titleSeparatorGap),
-              Divider(
+              const Divider(
                 thickness: AppTheme.separatorHeight,
                 color: AppColors.sectionSeparator,
               ),
-              SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
               // PageView com swipe lateral entre páginas de itens
               SizedBox(
                 height: pageHeight,
@@ -113,7 +104,7 @@ class _ChecklistItemsBuilderState extends State<ChecklistItemsBuilder> {
                   },
                 ),
               ),
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               // Indicador de swipe: dots para páginas
               if (pages.length > 1)
                 PaginationIndicatorWidget(
