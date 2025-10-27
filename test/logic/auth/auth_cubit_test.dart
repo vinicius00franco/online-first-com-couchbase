@@ -43,8 +43,9 @@ void main() {
   blocTest<AuthCubit, AuthState>(
     'emits AuthAuthenticated when login succeeds',
     build: () {
-      when(() => repository.login(email: any(named: 'email'), password: any(named: 'password')))
-          .thenAnswer((_) async => user);
+      when(() => repository.login(
+          email: any(named: 'email'),
+          password: any(named: 'password'))).thenAnswer((_) async => user);
       return AuthCubit(repository);
     },
     act: (cubit) => cubit.login(email: 'user@example.com', password: 'secret'),
@@ -58,7 +59,8 @@ void main() {
   blocTest<AuthCubit, AuthState>(
     'emits AuthError when login fails',
     build: () {
-      when(() => repository.login(email: any(named: 'email'), password: any(named: 'password')))
+      when(() => repository.login(
+              email: any(named: 'email'), password: any(named: 'password')))
           .thenThrow(InvalidCredentialsException('Credenciais inválidas.'));
       return AuthCubit(repository);
     },
@@ -81,7 +83,8 @@ void main() {
           )).thenAnswer((_) async => user);
       return AuthCubit(repository);
     },
-    act: (cubit) => cubit.register(name: 'Vinicius', email: 'user@example.com', password: 'secret'),
+    act: (cubit) => cubit.register(
+        name: 'Vinicius', email: 'user@example.com', password: 'secret'),
     expect: () => [
       const AuthLoading(),
       AuthAuthenticated(user),
@@ -99,7 +102,8 @@ void main() {
           )).thenThrow(UserAlreadyExistsException('Usuário já cadastrado.'));
       return AuthCubit(repository);
     },
-    act: (cubit) => cubit.register(name: 'Vinicius', email: 'user@example.com', password: 'secret'),
+    act: (cubit) => cubit.register(
+        name: 'Vinicius', email: 'user@example.com', password: 'secret'),
     expect: () => [
       const AuthLoading(),
       const AuthError('Usuário já cadastrado.'),

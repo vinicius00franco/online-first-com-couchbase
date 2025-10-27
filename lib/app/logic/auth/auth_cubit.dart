@@ -10,7 +10,9 @@ class AuthCubit extends Cubit<AuthState> {
     this._repository, {
     UserEntity? initialUser,
   })  : _currentUser = initialUser,
-        super(initialUser != null ? AuthAuthenticated(initialUser) : const AuthUnauthenticated());
+        super(initialUser != null
+            ? AuthAuthenticated(initialUser)
+            : const AuthUnauthenticated());
 
   final UserRepository _repository;
   UserEntity? _currentUser;
