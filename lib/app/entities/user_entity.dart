@@ -65,4 +65,28 @@ class UserEntity {
           : DateTime.parse(updatedAt as String),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! UserEntity) return false;
+    return other.id == id &&
+        other.name == name &&
+        other.email == email &&
+        other.passwordHash == passwordHash &&
+        other.salt == salt &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        name,
+        email,
+        passwordHash,
+        salt,
+        createdAt,
+        updatedAt,
+      );
 }
