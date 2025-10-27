@@ -68,7 +68,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) =>
-          current is AuthError || current is AuthAuthenticated || current is AuthUnauthenticated,
+          current is AuthError ||
+          current is AuthAuthenticated ||
+          current is AuthUnauthenticated,
       listener: (context, state) {
         if (state is AuthError) {
           ScaffoldMessenger.of(context)

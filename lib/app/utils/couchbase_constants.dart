@@ -8,10 +8,12 @@ class CouchbaseContants {
 
   // Parametrização de scope, collection e channel via .env (com fallback)
   static String get scope => _optional('SCOPE_NAME', '_default');
-  static String get collection => _optional('COLLECTION_NAME', 'checklist_items');
+  static String get collection =>
+      _optional('COLLECTION_NAME', 'checklist_items');
   static String get channel => _optional('CHANNEL', 'checklist_items');
 
-  static String get userCollection => _optional('USER_COLLECTION_NAME', 'users');
+  static String get userCollection =>
+      _optional('USER_COLLECTION_NAME', 'users');
   static String get userChannel => _optional('USER_CHANNEL', 'users');
 
   static String _required(String key) {
