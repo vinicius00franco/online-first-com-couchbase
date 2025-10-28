@@ -17,6 +17,12 @@
 - Collections: `checklist_items` (dados da checklist) e `testes`
 - Canal (channels): `checklist_items`
 
+Autenticação agora utiliza uma coleção dedicada de usuários. Por padrão:
+
+- Collection de usuários: `users` (ou valor definido em `USER_COLLECTION_NAME` no `.env`)
+- Canal de usuários: `users` (ou `USER_CHANNEL` no `.env`)
+- Usuários precisam de acesso de coleção para `_default.users` além de `_default.checklist_items`
+
 Configuração esperada:
 
 - URL pública (WebSocket) do Sync Gateway no .env: `PUBLIC_CONNECTION_URL=ws://localhost:4984/checklist_db`
@@ -25,6 +31,8 @@ Configuração esperada:
   - `SCOPE_NAME=_default`
   - `COLLECTION_NAME=checklist_items`
   - `CHANNEL=checklist_items`
+  - `USER_COLLECTION_NAME=users`
+  - `USER_CHANNEL=users`
 
 Provisionamento em desenvolvimento:
 

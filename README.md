@@ -58,6 +58,13 @@ adb reverse tcp:4984 tcp:4984
 
 Ou ajuste `PUBLIC_CONNECTION_URL` para o IP da sua rede, ex: `ws://192.168.0.10:4984/checklist_db`.
 
+### Autenticação e gerenciamento de usuários
+
+- A tela inicial exibe o fluxo de login. Use **Criar conta** para cadastrar um usuário localmente.
+- As credenciais são persistidas na coleção `_default.users` (configurável via `USER_COLLECTION_NAME`) com hash + salt usando SHA-256.
+- Garanta que o usuário do Sync Gateway possui acesso aos canais `checklist_items` e `users` (`USER_CHANNEL`) para permitir sincronização de dados e contas.
+- Na checklist, o menu superior permite editar nome/e-mail/senha pela tela de **Perfil** ou encerrar sessão.
+
 4) Permissões Android
 5) Dicas de debug
 
