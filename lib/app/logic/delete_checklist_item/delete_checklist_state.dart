@@ -3,8 +3,8 @@ abstract class DeleteChecklistState {}
 class DeleteChecklistInitial extends DeleteChecklistState {}
 
 class DeleteChecklistSuccess extends DeleteChecklistState {
-  final String itemId;
-  DeleteChecklistSuccess(this.itemId);
+  final String itemUuid;
+  DeleteChecklistSuccess(this.itemUuid);
 }
 
 class DeleteChecklistError extends DeleteChecklistState {

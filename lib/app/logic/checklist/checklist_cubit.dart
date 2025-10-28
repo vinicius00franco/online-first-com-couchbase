@@ -7,9 +7,9 @@ class FetchChecklistCubit extends Cubit<FetchChecklistState> {
 
   FetchChecklistCubit(this._repository) : super(FetchChecklistLoading());
 
-  Future<void> fetchItems() async {
+  Future<void> fetchItems({required String userId}) async {
     try {
-      final items = await _repository.fetchAll();
+      final items = await _repository.fetchAll(userId: userId);
       emit(FetchChecklistLoaded(items));
     } catch (e) {
       emit(FetchChecklistError('Erro ao carregar itens: $e'));
