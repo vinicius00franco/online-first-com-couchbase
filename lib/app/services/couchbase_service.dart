@@ -4,6 +4,7 @@ import 'package:cbl/cbl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../utils/couchbase_constants.dart';
+import 'replication_config.dart';
 
 class CouchbaseService {
   AsyncDatabase? database;
@@ -16,16 +17,19 @@ class CouchbaseService {
 
   Future<void> startReplication({required Function() onSynced}) async {
     await init();
+    final cfg = ReplicationConfig.fromEnv();
+    // Early validation to surface clear, actionable errors (TDD safeguard)
+    cfg.validate();
     final collection = await database?.createCollection(
-      CouchbaseContants.collection,
-      CouchbaseContants.scope,
+      cfg.checklistCollection,
+      cfg.scope,
     );
     if (collection != null) {
       final replicatorConfig = ReplicatorConfiguration(
-        target: UrlEndpoint(Uri.parse(CouchbaseContants.publicConnectionUrl)),
+        target: UrlEndpoint(cfg.url),
         authenticator: BasicAuthenticator(
-          username: CouchbaseContants.userName,
-          password: CouchbaseContants.password,
+          username: cfg.username,
+          password: cfg.password,
         ),
         continuous: true,
         replicatorType: ReplicatorType.pushAndPull,
@@ -34,7 +38,7 @@ class CouchbaseService {
       replicatorConfig.addCollection(
         collection,
         CollectionConfiguration(
-          channels: [CouchbaseContants.channel],
+          channels: [cfg.checklistChannel],
           conflictResolver: ConflictResolver.from((conflict) {
             return conflict.remoteDocument ?? conflict.localDocument;
           }),
@@ -42,14 +46,14 @@ class CouchbaseService {
       );
 
       final userCollection = await database?.createCollection(
-        CouchbaseContants.userCollection,
-        CouchbaseContants.scope,
+        cfg.userCollection,
+        cfg.scope,
       );
       if (userCollection != null) {
         replicatorConfig.addCollection(
           userCollection,
           CollectionConfiguration(
-            channels: [CouchbaseContants.userChannel],
+            channels: [cfg.userChannel],
             conflictResolver: ConflictResolver.from((conflict) {
               return conflict.remoteDocument ?? conflict.localDocument;
             }),

@@ -15,6 +15,22 @@ echo "   🏥 Couchbase Health Check"
 echo "═══════════════════════════════════════════════════"
 echo ""
 
+# Load .env if present to get USER_NAME / USER_PASSWORD / PUBLIC_CONNECTION_URL
+if [[ -f ".env" ]]; then
+  info "Loading .env variables..."
+  # shellcheck disable=SC1091
+  set -a; source .env; set +a
+else
+  warn ".env not found, using defaults (your_username/your_password, ws://localhost:4984/checklist_db)"
+fi
+
+# Derive DB name from PUBLIC_CONNECTION_URL if set
+PUBLIC_URL_DEFAULT="ws://localhost:4984/checklist_db"
+PUBLIC_URL="${PUBLIC_CONNECTION_URL:-$PUBLIC_URL_DEFAULT}"
+DB_NAME=$(echo "$PUBLIC_URL" | awk -F/ '{print $NF}')
+AUTH_USER="${USER_NAME:-your_username}"
+AUTH_PASS="${USER_PASSWORD:-your_password}"
+
 # Check Docker containers
 info "1. Checking Docker containers..."
 if docker ps | grep -q "couchbase-server"; then
@@ -54,12 +70,12 @@ echo ""
 
 # Check Database Configuration
 info "4. Checking Database configuration..."
-DB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "Administrator:password" http://localhost:4985/checklist_db/)
+DB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "Administrator:password" "http://localhost:4985/$DB_NAME/")
 if [[ "$DB_STATUS" == "200" ]]; then
-  ok "Database 'checklist_db' is configured"
+  ok "Database '$DB_NAME' is configured"
   
   # Check collections
-  COLLECTIONS=$(curl -s -u "Administrator:password" http://localhost:4985/checklist_db/_config | jq -r '.scopes._default.collections | keys[]' 2>/dev/null)
+  COLLECTIONS=$(curl -s -u "Administrator:password" "http://localhost:4985/$DB_NAME/_config" | jq -r '.scopes._default.collections | keys[]' 2>/dev/null)
   if [[ -n "$COLLECTIONS" ]]; then
     ok "Collections configured:"
     echo "$COLLECTIONS" | while read col; do
@@ -67,33 +83,33 @@ if [[ "$DB_STATUS" == "200" ]]; then
     done
   fi
 else
-  err "Database 'checklist_db' is NOT configured (HTTP $DB_STATUS)"
+  err "Database '$DB_NAME' is NOT configured (HTTP $DB_STATUS)"
   warn "Run: ./scripts/sg-configure-db.sh"
 fi
 echo ""
 
 # Check Public API
 info "5. Checking Sync Gateway Public API..."
-SG_PUBLIC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "your_username:your_password" http://localhost:4984/checklist_db/)
+SG_PUBLIC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "$AUTH_USER:$AUTH_PASS" "http://localhost:4984/$DB_NAME/")
 if [[ "$SG_PUBLIC_STATUS" == "200" ]]; then
   ok "Sync Gateway Public API is accessible (ws://localhost:4984)"
   
-  DB_INFO=$(curl -s -u "your_username:your_password" http://localhost:4984/checklist_db/)
+  DB_INFO=$(curl -s -u "$AUTH_USER:$AUTH_PASS" "http://localhost:4984/$DB_NAME/")
   UPDATE_SEQ=$(echo "$DB_INFO" | jq -r '.update_seq')
   ok "Database update_seq: $UPDATE_SEQ"
 else
   err "Sync Gateway Public API is NOT accessible (HTTP $SG_PUBLIC_STATUS)"
-  warn "Run: ./scripts/sg-ensure-user.sh your_username your_password"
+  warn "Run: ./scripts/ensure-sg-user-from-env.sh (or sg-ensure-user.sh $AUTH_USER $AUTH_PASS)"
 fi
 echo ""
 
 # Check User Configuration
 info "6. Checking user configuration..."
-USER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "Administrator:password" http://localhost:4985/checklist_db/_user/your_username)
+USER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -u "Administrator:password" "http://localhost:4985/$DB_NAME/_user/$AUTH_USER")
 if [[ "$USER_STATUS" == "200" ]]; then
-  ok "User 'your_username' exists"
+  ok "User '$AUTH_USER' exists"
   
-  USER_COLLECTIONS=$(curl -s -u "Administrator:password" http://localhost:4985/checklist_db/_user/your_username | jq -r '.collection_access._default | keys[]' 2>/dev/null)
+  USER_COLLECTIONS=$(curl -s -u "Administrator:password" "http://localhost:4985/$DB_NAME/_user/$AUTH_USER" | jq -r '.collection_access._default | keys[]' 2>/dev/null)
   if [[ -n "$USER_COLLECTIONS" ]]; then
     ok "User has access to collections:"
     echo "$USER_COLLECTIONS" | while read col; do
@@ -101,8 +117,8 @@ if [[ "$USER_STATUS" == "200" ]]; then
     done
   fi
 else
-  err "User 'your_username' does NOT exist (HTTP $USER_STATUS)"
-  warn "Run: ./scripts/sg-ensure-user.sh your_username your_password"
+  err "User '$AUTH_USER' does NOT exist (HTTP $USER_STATUS)"
+  warn "Run: ./scripts/ensure-sg-user-from-env.sh (or sg-ensure-user.sh $AUTH_USER $AUTH_PASS)"
 fi
 echo ""
 
@@ -153,9 +169,9 @@ echo "════════════════════════�
 echo ""
 echo "Couchbase Server:  http://localhost:8091"
 echo "Sync Gateway Admin: http://localhost:4985"
-echo "Sync Gateway Public: ws://localhost:4984/checklist_db"
-echo "Username: your_username"
-echo "Password: your_password"
+echo "Sync Gateway Public: $PUBLIC_URL"
+echo "Username: $AUTH_USER"
+echo "Password: $AUTH_PASS"
 echo ""
 ok "Health check complete!"
 echo ""

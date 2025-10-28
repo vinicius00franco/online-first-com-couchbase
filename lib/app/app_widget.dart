@@ -13,6 +13,7 @@ import 'pages/auth/auth_gate.dart';
 import 'repositories/checklist_repository.dart';
 import 'repositories/user_repository.dart';
 import 'services/couchbase_service.dart';
+import 'utils/uuid_helper.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -67,6 +68,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (context) => CouchbaseService()),
+        // Utilitário para geração de UUIDs
+        Provider(create: (context) => UuidHelper()),
 
         // Fornece o ChecklistRepository
         Provider(
@@ -83,6 +86,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AddChecklistCubit(
             context.read<ChecklistRepository>(),
+            context.read<UuidHelper>(),
           ),
         ),
         BlocProvider(

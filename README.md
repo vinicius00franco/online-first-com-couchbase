@@ -58,6 +58,16 @@ adb reverse tcp:4984 tcp:4984
 
 Ou ajuste `PUBLIC_CONNECTION_URL` para o IP da sua rede, ex: `ws://192.168.0.10:4984/checklist_db`.
 
+4) Atalho de desenvolvimento
+
+Para subir tudo e preparar o ambiente (containers, adb reverse, DB e usuário), use o script de atalho:
+
+```
+./scripts/dev-sync.sh
+```
+
+Isso configura o banco no Sync Gateway (coleções e sync functions) e garante o usuário definido no `.env`.
+
 ### Autenticação e gerenciamento de usuários
 
 - A tela inicial exibe o fluxo de login. Use **Criar conta** para cadastrar um usuário localmente.
@@ -75,5 +85,10 @@ Ou ajuste `PUBLIC_CONNECTION_URL` para o IP da sua rede, ex: `ws://192.168.0.10:
 ```
 
 Se o app logar "Erro de replicação", cheque se o usuário possui `collection_access` para `_default.checklist_items` e se o `PUBLIC_CONNECTION_URL` aponta para `ws://localhost:4984/checklist_db` (com `adb reverse` ativo em dispositivo físico).
+
+Se aparecer "Invalid login (401)":
+- Rode `./scripts/health-check.sh` para diagnosticar.
+- Garanta o usuário com `./scripts/ensure-sg-user-from-env.sh` (usa `USER_NAME`/`USER_PASSWORD` do `.env`).
+- A partir deste commit, o app falha cedo com uma mensagem clara se `USER_NAME`/`USER_PASSWORD` ainda estiverem como placeholders (`your_username`/`your_password`) ou se a URL não for `ws://`/`wss://` com nome de banco.
 
 O `AndroidManifest.xml` inclui `INTERNET`, `ACCESS_NETWORK_STATE` e `android:usesCleartextTraffic="true"` para permitir `ws://` em dev. Em produção, prefira `wss://` e desative cleartext.

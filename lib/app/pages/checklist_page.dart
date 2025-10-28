@@ -46,7 +46,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
           item.id!,
           isCompleted: !item.isCompleted,
         );
-    context.read<FetchChecklistCubit>().fetchItems();
+    final userId = context.read<AuthCubit>().currentUser?.id;
+    if (userId != null) {
+      context.read<FetchChecklistCubit>().fetchItems(userId: userId);
+    }
   }
 
   // DELETE ITEM
@@ -57,7 +60,10 @@ class _ChecklistPageState extends State<ChecklistPage> {
       content: 'Deseja excluir o item "${item.title}"?',
       onConfirm: () async {
         await context.read<DeleteChecklistCubit>().deleteItem(item.id!);
-        context.read<FetchChecklistCubit>().fetchItems();
+        final userId = context.read<AuthCubit>().currentUser?.id;
+        if (userId != null) {
+          context.read<FetchChecklistCubit>().fetchItems(userId: userId);
+        }
       },
     );
   }
@@ -84,30 +90,39 @@ class _ChecklistPageState extends State<ChecklistPage> {
               title: controller.text,
               price: newPrice,
             );
-        await context.read<FetchChecklistCubit>().fetchItems();
+        final userId = context.read<AuthCubit>().currentUser?.id;
+        if (userId != null) {
+          await context.read<FetchChecklistCubit>().fetchItems(userId: userId);
+        }
       },
     );
   }
 
   // ADD ITEM
   Future<void> addItem(String title, double price) async {
+    final userId = context.read<AuthCubit>().currentUser?.id;
+    if (userId == null) return;
+
     await context.read<AddChecklistCubit>().addItem(
-          ShoppingItemEntity(
-            title: title,
-            createdAt: DateTime.now(),
-            isCompleted: false,
-            price: price,
-          ),
+          userId: userId,
+          title: title,
+          price: price,
         );
     textController.clear();
-    context.read<FetchChecklistCubit>().fetchItems();
+    context.read<FetchChecklistCubit>().fetchItems(userId: userId);
   }
 
   Future<void> initApp() async {
-    await context.read<FetchChecklistCubit>().fetchItems();
+    final userId = context.read<AuthCubit>().currentUser?.id;
+    if (userId != null) {
+      await context.read<FetchChecklistCubit>().fetchItems(userId: userId);
+    }
     context.read<CouchbaseService>().startReplication(
       onSynced: () {
-        context.read<FetchChecklistCubit>().fetchItems();
+        final userId = context.read<AuthCubit>().currentUser?.id;
+        if (userId != null) {
+          context.read<FetchChecklistCubit>().fetchItems(userId: userId);
+        }
       },
     );
     context.read<CouchbaseService>().networkStatusListen();
