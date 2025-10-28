@@ -10,28 +10,32 @@ class ChecklistRepository {
 
   final collectionName = CouchbaseContants.collection;
 
-  Future<List<ShoppingItemEntity>> fetchAll() async {
+  Future<List<ShoppingItemEntity>> fetchAll({required String userId}) async {
     final result = await couchbaseService.fetch(collectionName: collectionName);
-    final data = result.map(ShoppingItemEntity.fromMap).toList();
+    final data = result
+        .where((item) => item['userId'] == userId)
+        .map(ShoppingItemEntity.fromMap)
+        .toList();
     return data;
   }
 
-  Future<void> addItem(ShoppingItemEntity item) async {
-    await couchbaseService.add(
+  Future<String?> addItem(ShoppingItemEntity item) async {
+    final docId = await couchbaseService.add(
       data: item.toMap(),
       collectionName: collectionName,
     );
+    return docId;
   }
 
   Future<void> updateItem({
-    required String id,
+    required String uuid,
     String? title,
     bool? isCompleted,
     double? price,
   }) async {
     await couchbaseService.edit(
       collectionName: collectionName,
-      id: id,
+      id: uuid,
       data: {
         if (title != null) 'title': title,
         if (isCompleted != null) 'isCompleted': isCompleted,
@@ -40,7 +44,7 @@ class ChecklistRepository {
     );
   }
 
-  Future<void> deleteItem(String id) async {
-    await couchbaseService.delete(collectionName: collectionName, id: id);
+  Future<void> deleteItem(String uuid) async {
+    await couchbaseService.delete(collectionName: collectionName, id: uuid);
   }
 }
