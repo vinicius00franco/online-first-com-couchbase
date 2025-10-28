@@ -1,19 +1,40 @@
 {
   "bootstrap": {
     "server": "couchbase://couchbase",
-    "username": "Administrator",
-    "password": "password",
+    "username": "sgw",
+    "password": "sgwpass",
     "use_tls_server": false
+  },
+  "databases": {
+    "checklist_db": {
+      "bucket": "checklist_db",
+      "scopes": {
+        "_default": {
+          "collections": {
+            "checklist_items": {
+              "sync": "function(doc) { channel(doc.channels); }"
+            },
+            "testes": {
+              "sync": "function(doc) { channel(doc.channels); }"
+            }
+          }
+        }
+      }
+    }
   },
   "api": {
     "public_interface": ":4984",
-    "admin_interface": ":4985"
+    "admin_interface": ":4985",
+    "https": {}
   },
   "logging": {
     "console": {
-      "enabled": true,
-      "log_level": "info",
-      "log_keys": ["HTTP", "CRUD", "Sync", "Changes", "Auth"]
+      "log_level": "debug"
     }
+  },
+  "auth": {},
+  "replicator": {},
+  "unsupported": {
+    "serverless": {}
   }
 }

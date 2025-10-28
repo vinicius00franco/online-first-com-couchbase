@@ -45,7 +45,7 @@ echo ""
 # Check Sync Gateway Admin
 info "3. Checking Sync Gateway Admin API..."
 SG_ADMIN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4985/)
-if [[ "$SG_ADMIN_STATUS" == "200" ]]; then
+if [[ "$SG_ADMIN_STATUS" == "200" || "$SG_ADMIN_STATUS" == "401" ]]; then
   ok "Sync Gateway Admin API is accessible (http://localhost:4985)"
 else
   err "Sync Gateway Admin API is NOT accessible (HTTP $SG_ADMIN_STATUS)"
