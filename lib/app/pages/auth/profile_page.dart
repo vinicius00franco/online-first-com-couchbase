@@ -215,6 +215,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             label: const Text('Salvar alterações'),
                           ),
                         ),
+                        const SizedBox(height: AppSpacing.md),
+                        SizedBox(
+                          height: AppTheme.buttonHeight,
+                          child: OutlinedButton.icon(
+                            key: const Key('profile_logout_button'),
+                            onPressed: () => context.read<AuthCubit>().logout(),
+                            icon: const Icon(Icons.logout),
+                            label: const Text('Sair'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.error,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
